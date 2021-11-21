@@ -1,9 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { getAlertUrls, getConfigByFeedIndex } from 'util/';
+import { FeedService } from 'feed/feed.service';
 import { Alert } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
-import { FeedService } from 'feed/feed.service';
+import { getAlertUrls, getConfigByFeedIndex } from 'util/';
+import { EntityTypes } from 'constants/';
 
 @Injectable()
 export class AlertsService {
@@ -34,7 +35,7 @@ export class AlertsService {
         feedIndex,
         urls,
         entity: AlertEntity,
-        type: 'alert',
+        type: EntityTypes.ALERT,
       },
     );
 

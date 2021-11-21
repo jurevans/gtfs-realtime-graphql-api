@@ -4,6 +4,7 @@ import { TripUpdate } from 'proto/gtfs-realtime';
 import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { FeedService } from 'feed/feed.service';
 import { getConfigByFeedIndex, getUrlsByRouteIds } from 'util/';
+import { EntityTypes } from 'constants/';
 
 @Injectable()
 export class TripUpdatesService {
@@ -36,7 +37,7 @@ export class TripUpdatesService {
       feedIndex,
       urls,
       entity: TripUpdateEntity,
-      type: 'tripUpdate',
+      type: EntityTypes.TRIP_UPDATE,
     });
 
     return <TripUpdateEntity[]>entities;

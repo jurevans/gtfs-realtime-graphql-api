@@ -4,6 +4,7 @@ import { VehiclePosition } from 'proto/gtfs-realtime';
 import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
 import { FeedService } from 'feed/feed.service';
 import { getConfigByFeedIndex, getUrlsByRouteIds } from 'util/';
+import { EntityTypes } from 'constants/';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -36,7 +37,7 @@ export class VehiclePositionsService {
       feedIndex,
       urls,
       entity: VehiclePositionEntity,
-      type: 'vehicle',
+      type: EntityTypes.VEHICLE_POSITION,
     });
 
     return <VehiclePositionEntity[]>entities;

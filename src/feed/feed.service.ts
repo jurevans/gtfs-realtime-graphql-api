@@ -1,9 +1,4 @@
-import {
-  CACHE_MANAGER,
-  HttpException,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import fetch from 'node-fetch';
@@ -25,18 +20,6 @@ export class FeedService {
     type: string;
   }): Promise<T1[]> {
     const { feedIndex, urls, entity, type } = props;
-    const config = getConfigByFeedIndex(
-      this.configService,
-      'gtfs-realtime',
-      feedIndex,
-    );
-
-    if (!config) {
-      throw new HttpException(
-        `No valid configuration found for feedIndex: ${feedIndex}!`,
-        500,
-      );
-    }
 
     const feeds: FeedMessage[] = await Promise.all(
       urls.map(
@@ -44,9 +27,10 @@ export class FeedService {
           <FeedMessage>await this._getFeedMessage(feedIndex, endpoint),
       ),
     );
-    const entities = feeds
-      .flat()
-      .map((feed: FeedMessage) => getFeedEntitiesByType(feed, type));
+
+    const entities = feeds.map((feed: FeedMessage) =>
+      getFeedEntitiesByType(feed, type),
+    );
 
     return <T1[]>(
       entities
