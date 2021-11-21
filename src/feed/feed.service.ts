@@ -41,9 +41,9 @@ export class FeedService {
 
   private async _getFeedMessage(
     feedIndex: number,
-    endpoint: string,
+    url: string,
   ): Promise<FeedMessage> {
-    const feedMessageInCache = await this.cacheManager.get(endpoint);
+    const feedMessageInCache: FeedMessage = await this.cacheManager.get(url);
     if (feedMessageInCache) {
       return feedMessageInCache;
     }
@@ -62,13 +62,13 @@ export class FeedService {
       },
     };
 
-    const response = await fetch(endpoint, options);
+    const response = await fetch(url, options);
     const buffer = await response.buffer();
     const feedMessage = FeedMessage.decode(buffer);
 
     const feedMessageJSON = FeedMessage.toJSON(feedMessage);
-    this.cacheManager.set(endpoint, feedMessageJSON);
+    this.cacheManager.set(url, feedMessageJSON);
 
-    return await (<FeedMessage>this.cacheManager.get(endpoint));
+    return await this.cacheManager.get(url);
   }
 }
