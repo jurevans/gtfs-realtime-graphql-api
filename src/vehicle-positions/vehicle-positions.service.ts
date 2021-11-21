@@ -1,13 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { VehiclePosition } from 'proto/gtfs-realtime';
 import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
 import { FeedService } from 'feed/feed.service';
-import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
-import {
-  getConfigByFeedIndex,
-  getUrlsByRouteIds,
-  getFeedEntitiesByType,
-} from 'util/';
+import { getConfigByFeedIndex, getUrlsByRouteIds } from 'util/';
+import { EntityTypes } from 'constants/';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -32,24 +29,17 @@ export class VehiclePositionsService {
 
     const { feedUrls } = config;
     const urls = getUrlsByRouteIds(feedUrls, routeIds);
-    const feeds: FeedMessage[] = await Promise.all(
-      urls.map(
-        async (endpoint: string) =>
-          <FeedMessage>await this.feedService.getFeedMessage({
-            feedIndex,
-            endpoint,
-          }),
-      ),
-    );
 
-    const entities = feeds
-      .flat()
-      .map((feed: FeedMessage) => getFeedEntitiesByType(feed, 'vehicle'));
+    const entities = await this.feedService.getFeedMessages<
+      VehiclePositionEntity,
+      VehiclePosition
+    >({
+      feedIndex,
+      urls,
+      entity: VehiclePositionEntity,
+      type: EntityTypes.VEHICLE_POSITION,
+    });
 
-    return <VehiclePositionEntity[]>(
-      entities
-        .flat()
-        .map((entity: FeedEntity) => new VehiclePositionEntity(entity.vehicle))
-    );
+    return <VehiclePositionEntity[]>entities;
   }
 }

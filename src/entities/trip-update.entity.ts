@@ -9,7 +9,7 @@ export class TripUpdateEntity {
   @Field(() => TripDescriptorEntity)
   trip: TripDescriptorEntity;
 
-  @Field(() => VehicleDescriptorEntity)
+  @Field(() => VehicleDescriptorEntity, { nullable: true })
   vehicle: VehicleDescriptorEntity;
 
   @Field(() => [StopTimeUpdateEntity])

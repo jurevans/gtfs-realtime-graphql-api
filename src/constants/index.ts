@@ -7,16 +7,13 @@ export enum CacheTtlSeconds {
   FOREVER = 0,
 }
 
-export enum CacheKeyPrefix {
-  VEHICLES = 'vehicles',
-  TRANSFERS = 'transfers',
-  ALERTS = 'alerts',
-  STOPS = 'stops',
-}
-
 export enum Intervals {
   GTFS_TRIP_UPDATES = 30000,
   GTFS_ALERTS = 60000,
 }
 
-export const MAX_MINUTES = 60;
+export enum EntityTypes {
+  ALERT = 'alert',
+  VEHICLE_POSITION = 'vehicle',
+  TRIP_UPDATE = 'tripUpdate',
+}

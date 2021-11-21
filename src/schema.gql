@@ -65,7 +65,7 @@ type StopTimeUpdateEntity {
 
 type TripUpdateEntity {
   trip: TripDescriptorEntity!
-  vehicle: VehicleDescriptorEntity!
+  vehicle: VehicleDescriptorEntity
   stopTimeUpdate: [StopTimeUpdateEntity!]!
   timestamp: Int!
   delay: Int!

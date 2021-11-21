@@ -2,8 +2,8 @@ import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import fetch from 'node-fetch';
-import { FeedMessage } from 'proto/gtfs-realtime';
-import { getConfigByFeedIndex } from 'util/';
+import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
+import { getConfigByFeedIndex, getFeedEntitiesByType } from 'util/';
 
 @Injectable()
 export class FeedService {
@@ -13,12 +13,36 @@ export class FeedService {
     private readonly configService: ConfigService,
   ) {}
 
-  public async getFeedMessage(props: {
+  public async getFeedMessages<T1, T2>(props: {
     feedIndex: number;
-    endpoint: string;
-  }): Promise<FeedMessage> {
-    const { feedIndex, endpoint } = props;
+    urls: string[];
+    entity: { new (partial?: T2): T1 };
+    type: string;
+  }): Promise<T1[]> {
+    const { feedIndex, urls, entity, type } = props;
 
+    const feeds: FeedMessage[] = await Promise.all(
+      urls.map(
+        async (endpoint: string) =>
+          <FeedMessage>await this._getFeedMessage(feedIndex, endpoint),
+      ),
+    );
+
+    const entities = feeds.map((feed: FeedMessage) =>
+      getFeedEntitiesByType(feed, type),
+    );
+
+    return <T1[]>(
+      entities
+        .flat()
+        .map((feedEntity: FeedEntity) => new entity(feedEntity[type]))
+    );
+  }
+
+  private async _getFeedMessage(
+    feedIndex: number,
+    endpoint: string,
+  ): Promise<FeedMessage> {
     const feedMessageInCache = await this.cacheManager.get(endpoint);
     if (feedMessageInCache) {
       return feedMessageInCache;

@@ -1,9 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
-import { getAlertUrls, getConfigByFeedIndex } from 'util/';
-import { AlertEntity } from 'entities/alert.entity';
 import { FeedService } from 'feed/feed.service';
+import { Alert } from 'proto/gtfs-realtime';
+import { AlertEntity } from 'entities/alert.entity';
+import { getAlertUrls, getConfigByFeedIndex } from 'util/';
+import { EntityTypes } from 'constants/';
 
 @Injectable()
 export class AlertsService {
@@ -28,20 +29,16 @@ export class AlertsService {
 
     const { feedUrls } = config;
     const urls = getAlertUrls(feedUrls);
-    const feeds: FeedMessage[] = await Promise.all(
-      urls.map(
-        async (endpoint: string) =>
-          <FeedMessage>await this.feedService.getFeedMessage({
-            feedIndex,
-            endpoint,
-          }),
-      ),
+
+    const entities = await this.feedService.getFeedMessages<AlertEntity, Alert>(
+      {
+        feedIndex,
+        urls,
+        entity: AlertEntity,
+        type: EntityTypes.ALERT,
+      },
     );
 
-    const entities = feeds.map((feed: FeedMessage) => feed.entity);
-
-    return <AlertEntity[]>(
-      entities.flat().map((entity: FeedEntity) => new AlertEntity(entity.alert))
-    );
+    return <AlertEntity[]>entities;
   }
 }
