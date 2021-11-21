@@ -35,7 +35,7 @@ export class FeedService {
     return <T1[]>(
       entities
         .flat()
-        .map((gtfsEntity: FeedEntity) => new entity(gtfsEntity[type]))
+        .map((feedEntity: FeedEntity) => new entity(feedEntity[type]))
     );
   }
 
