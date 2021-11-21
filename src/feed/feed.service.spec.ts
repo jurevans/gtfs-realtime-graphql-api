@@ -1,11 +1,13 @@
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/common';
 import { FeedService } from 'feed/feed.service';
 
 describe('FeedService', () => {
   let service: FeedService;
 
   const mockConfigService = {};
+  const mockCacheManager = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -14,6 +16,10 @@ describe('FeedService', () => {
         {
           provide: ConfigService,
           useValue: mockConfigService,
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: mockCacheManager,
         },
       ],
     }).compile();
