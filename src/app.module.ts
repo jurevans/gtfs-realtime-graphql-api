@@ -8,6 +8,7 @@ import gtfsConfig from 'config/gtfs.config';
 import { CacheTtlSeconds } from 'constants/';
 import { AlertsModule } from './alerts/alerts.module';
 import { TripUpdatesModule } from './trip-updates/trip-updates.module';
+import { VehiclePositionsModule } from './vehicle-positions/vehicle-positions.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TripUpdatesModule } from './trip-updates/trip-updates.module';
     }),
     AlertsModule,
     TripUpdatesModule,
+    VehiclePositionsModule,
   ],
 })
 export class AppModule {}
