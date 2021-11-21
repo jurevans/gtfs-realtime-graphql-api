@@ -1,0 +1,77 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type TripDescriptorEntity {
+  tripId: String!
+  routeId: String!
+  directionId: Int!
+  startTime: String!
+  startDate: String!
+  scheduleRelationship: Int!
+}
+
+type EntitySelectorEntity {
+  agencyId: String!
+  routeId: String!
+  routeType: Int!
+  trip: TripDescriptorEntity!
+  stopId: String!
+}
+
+type TimeRangeEntity {
+  start: Int!
+  end: Int!
+}
+
+type TranslationEntity {
+  text: String!
+  language: String!
+}
+
+type TranslationStringEntity {
+  translation: [TranslationEntity!]!
+}
+
+type AlertEntity {
+  activePeriod: [TimeRangeEntity!]!
+  informedEntity: [EntitySelectorEntity!]!
+  cause: String!
+  effect: String!
+  url: String!
+  headerText: TranslationStringEntity!
+  descriptionText: TranslationStringEntity!
+}
+
+type VehicleDescriptorEntity {
+  id: String!
+  label: String!
+  licensePlate: String!
+}
+
+type StopTimeEventEntity {
+  delay: Int!
+  time: Int!
+  uncertainty: Int!
+}
+
+type StopTimeUpdateEntity {
+  stopSequence: Int!
+  stopId: String!
+  arrival: StopTimeEventEntity!
+  departure: StopTimeEventEntity!
+  scheduleRelationship: Int!
+}
+
+type TripUpdateEntity {
+  trip: TripDescriptorEntity!
+  vehicle: VehicleDescriptorEntity!
+  stopTimeUpdate: [StopTimeUpdateEntity!]!
+  timestamp: Int!
+  delay: Int!
+}
+
+type Query {
+  alerts(feedIndex: Int!): [AlertEntity!]!
+  tripUpdates(routeIds: [String!]!, feedIndex: Int!): [TripUpdateEntity!]!
+}
