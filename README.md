@@ -153,6 +153,29 @@ Fetch `Alert` data for `feedIndex` = `1`:
 }
 ```
 
+Fetch `VehiclePosition` data for route IDs `A` and `1`, with `feedIndex` = `1`
+
+```
+{
+  vehiclePositions(feedIndex: 1, routeIds: ["A", "1"]) {
+    stopId
+    timestamp
+    occupancyStatus
+    currentStopSequence
+    currentStatus
+    trip {
+      tripId
+      startTime
+      startDate
+    }
+    position {
+      latitude
+      longitude
+    }
+  }
+}
+```
+
 ## TODO
 
-- Implement a WebSocket gateway which can also serve `Alert` and `TripUpdate` data.
+- Implement a WebSocket gateway which can also serve `Alert`, `TripUpdate`, and `VehiclePosition` data.

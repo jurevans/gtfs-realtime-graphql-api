@@ -71,7 +71,28 @@ type TripUpdateEntity {
   delay: Int!
 }
 
+type PositionEntity {
+  latitude: Int
+  longitude: Int
+  bearing: Int
+  odometer: Int
+  speed: Int
+}
+
+type VehiclePositionEntity {
+  trip: TripDescriptorEntity!
+  vehicle: VehicleDescriptorEntity!
+  position: PositionEntity
+  currentStopSequence: Int!
+  stopId: String!
+  currentStatus: String!
+  timestamp: Int!
+  congestionLevel: String!
+  occupancyStatus: String!
+}
+
 type Query {
   alerts(feedIndex: Int!): [AlertEntity!]!
   tripUpdates(routeIds: [String!]!, feedIndex: Int!): [TripUpdateEntity!]!
+  vehiclePositions(routeIds: [String!]!, feedIndex: Int!): [VehiclePositionEntity!]!
 }

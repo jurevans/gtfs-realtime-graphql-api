@@ -3,17 +3,6 @@ import { IEndpoint } from 'interfaces/endpoint.interface';
 import { FeedEntity, FeedMessage, TranslatedString } from 'proto/gtfs-realtime';
 
 /**
- * Format key
- * @param keyPrefix
- * @param value
- * @returns {string}
- */
-export const formatCacheKey = (
-  keyPrefix: string,
-  value: string | number,
-): string => `/${keyPrefix}/${value}`;
-
-/**
  * Get config from ConfigService
  * @param configService
  * @param configKey
