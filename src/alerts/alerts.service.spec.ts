@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AlertsService } from 'alerts/alerts.service';
 import { ConfigService } from '@nestjs/config';
-import { AlertsResolver } from './alerts.resolver';
+import { AlertsResolver } from 'alerts/alerts.resolver';
 import { FeedService } from 'feed/feed.service';
 
 describe('AlertsService', () => {

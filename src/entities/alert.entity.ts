@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Alert } from 'proto/gtfs-realtime';
-import { EntitySelectorEntity } from './entity-selector.entity';
-import { TimeRangeEntity } from './timerange.entity';
-import { TranslationStringEntity } from './translation-string.entity';
+import { EntitySelectorEntity } from 'entities/entity-selector.entity';
+import { TimeRangeEntity } from 'entities/timerange.entity';
+import { TranslationStringEntity } from 'entities/translation-string.entity';
 
 @ObjectType()
 export class AlertEntity {

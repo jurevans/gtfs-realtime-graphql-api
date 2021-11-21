@@ -4,12 +4,12 @@ import { AlertEntity } from 'entities/alert.entity';
 
 @Resolver(() => AlertEntity)
 export class AlertsResolver {
-  constructor(private realtimeService: AlertsService) {}
+  constructor(private alertsService: AlertsService) {}
 
   @Query(() => [AlertEntity])
   alerts(
     @Args('feedIndex', { type: () => Int }) feedIndex: number,
   ): Promise<AlertEntity[]> {
-    return this.realtimeService.getAlerts(feedIndex);
+    return this.alertsService.getAlerts(feedIndex);
   }
 }

@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { TripDescriptorEntity } from './trip-descriptor.entity';
+import { TripDescriptorEntity } from 'entities/trip-descriptor.entity';
 
 @ObjectType()
 export class EntitySelectorEntity {

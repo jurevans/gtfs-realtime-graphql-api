@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AlertsResolver } from './alerts.resolver';
+import { AlertsResolver } from 'alerts/alerts.resolver';
 import { AlertsService } from 'alerts/alerts.service';
 
 describe('AlertsResolver', () => {
