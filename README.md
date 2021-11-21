@@ -76,7 +76,6 @@ const gtfsRealtime = [
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts',
       },
     ],
-    proto: 'nyct-subway',
     accessKey: 'GTFS_REALTIME_ACCESS_KEY',
   },
 ];
@@ -87,6 +86,8 @@ Using the above configuration as an example, you would need the following variab
 ```bash
 GTFS_REALTIME_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
+
+**NOTE**: Each feed will have it's own `accessKey`. Having this associated with the GTFS feed configuration allows us to serve multiple feeds from this API, such as subway, metro rail, bus, and ferry.
 
 You will need a unique access key for each group of feed endpoints you want to authenticate. In general, you may only have one configuration in here (for this example, we are configuring for the NYC MTA subway system, but we may want to add endpoints for buses as well). These are keyed by the unique `feedIndex` and `agencyId` values found in the agency table (in this example, `1` and `MTA NYCT`).
 
