@@ -1,13 +1,9 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { TripUpdate } from 'proto/gtfs-realtime';
 import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { FeedService } from 'feed/feed.service';
-import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
-import {
-  getConfigByFeedIndex,
-  getUrlsByRouteIds,
-  getFeedEntitiesByType,
-} from 'util/';
+import { getConfigByFeedIndex, getUrlsByRouteIds } from 'util/';
 
 @Injectable()
 export class TripUpdatesService {
@@ -32,24 +28,17 @@ export class TripUpdatesService {
 
     const { feedUrls } = config;
     const urls = getUrlsByRouteIds(feedUrls, routeIds);
-    const feeds: FeedMessage[] = await Promise.all(
-      urls.map(
-        async (endpoint: string) =>
-          <FeedMessage>await this.feedService.getFeedMessage({
-            feedIndex,
-            endpoint,
-          }),
-      ),
-    );
 
-    const entities = feeds
-      .flat()
-      .map((feed: FeedMessage) => getFeedEntitiesByType(feed, 'tripUpdate'));
+    const entities = await this.feedService.getFeedMessages<
+      TripUpdateEntity,
+      TripUpdate
+    >({
+      feedIndex,
+      urls,
+      entity: TripUpdateEntity,
+      type: 'tripUpdate',
+    });
 
-    return <TripUpdateEntity[]>(
-      entities
-        .flat()
-        .map((entity: FeedEntity) => new TripUpdateEntity(entity.tripUpdate))
-    );
+    return <TripUpdateEntity[]>entities;
   }
 }

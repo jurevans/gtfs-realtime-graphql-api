@@ -1,9 +1,14 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  HttpException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import fetch from 'node-fetch';
-import { FeedMessage } from 'proto/gtfs-realtime';
-import { getConfigByFeedIndex } from 'util/';
+import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
+import { getConfigByFeedIndex, getFeedEntitiesByType } from 'util/';
 
 @Injectable()
 export class FeedService {
@@ -13,7 +18,46 @@ export class FeedService {
     private readonly configService: ConfigService,
   ) {}
 
-  public async getFeedMessage(props: {
+  public async getFeedMessages<T1, T2>(props: {
+    feedIndex: number;
+    urls: string[];
+    entity: { new (partial?: T2): T1 };
+    type: string;
+  }): Promise<T1[]> {
+    const { feedIndex, urls, entity, type } = props;
+    const config = getConfigByFeedIndex(
+      this.configService,
+      'gtfs-realtime',
+      feedIndex,
+    );
+
+    if (!config) {
+      throw new HttpException(
+        `No valid configuration found for feedIndex: ${feedIndex}!`,
+        500,
+      );
+    }
+
+    const feeds: FeedMessage[] = await Promise.all(
+      urls.map(
+        async (endpoint: string) => <FeedMessage>await this._getFeedMessage({
+            feedIndex,
+            endpoint,
+          }),
+      ),
+    );
+    const entities = feeds
+      .flat()
+      .map((feed: FeedMessage) => getFeedEntitiesByType(feed, type));
+
+    return <T1[]>(
+      entities
+        .flat()
+        .map((gtfsEntity: FeedEntity) => new entity(gtfsEntity[type]))
+    );
+  }
+
+  private async _getFeedMessage(props: {
     feedIndex: number;
     endpoint: string;
   }): Promise<FeedMessage> {
