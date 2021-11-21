@@ -2,11 +2,11 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 import { getAlertUrls, getConfigByFeedIndex } from 'util/';
-import { AlertEntity } from 'realtime/entities/alert.entity';
-import { FeedService } from 'realtime/feed.service';
+import { AlertEntity } from 'entities/alert.entity';
+import { FeedService } from 'feed/feed.service';
 
 @Injectable()
-export class RealtimeService {
+export class AlertsService {
   constructor(
     private readonly configService: ConfigService,
     private readonly feedService: FeedService,

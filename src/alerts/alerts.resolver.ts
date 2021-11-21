@@ -1,10 +1,10 @@
 import { Args, Int, Query, Resolver } from '@nestjs/graphql';
-import { RealtimeService } from 'realtime/realtime.service';
-import { AlertEntity } from 'realtime/entities/alert.entity';
+import { AlertsService } from 'alerts/alerts.service';
+import { AlertEntity } from 'entities/alert.entity';
 
 @Resolver(() => AlertEntity)
-export class RealtimeResolver {
-  constructor(private realtimeService: RealtimeService) {}
+export class AlertsResolver {
+  constructor(private realtimeService: AlertsService) {}
 
   @Query(() => [AlertEntity])
   alerts(

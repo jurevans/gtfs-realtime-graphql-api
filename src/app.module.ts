@@ -3,11 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import * as redisStore from 'cache-manager-redis-store';
 import { join } from 'path';
-import { AppService } from './app.service';
 import redisConfig from 'config/redis.config';
 import gtfsConfig from 'config/gtfs.config';
 import { CacheTtlSeconds } from 'constants/';
-import { RealtimeModule } from './realtime/realtime.module';
+import { AlertsModule } from './alerts/alerts.module';
+import { TripUpdatesModule } from './trip-updates/trip-updates.module';
 
 @Module({
   imports: [
@@ -29,8 +29,8 @@ import { RealtimeModule } from './realtime/realtime.module';
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-    RealtimeModule,
+    AlertsModule,
+    TripUpdatesModule,
   ],
-  providers: [AppService],
 })
 export class AppModule {}
