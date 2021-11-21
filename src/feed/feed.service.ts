@@ -40,10 +40,8 @@ export class FeedService {
 
     const feeds: FeedMessage[] = await Promise.all(
       urls.map(
-        async (endpoint: string) => <FeedMessage>await this._getFeedMessage({
-            feedIndex,
-            endpoint,
-          }),
+        async (endpoint: string) =>
+          <FeedMessage>await this._getFeedMessage(feedIndex, endpoint),
       ),
     );
     const entities = feeds
@@ -57,12 +55,10 @@ export class FeedService {
     );
   }
 
-  private async _getFeedMessage(props: {
-    feedIndex: number;
-    endpoint: string;
-  }): Promise<FeedMessage> {
-    const { feedIndex, endpoint } = props;
-
+  private async _getFeedMessage(
+    feedIndex: number,
+    endpoint: string,
+  ): Promise<FeedMessage> {
     const feedMessageInCache = await this.cacheManager.get(endpoint);
     if (feedMessageInCache) {
       return feedMessageInCache;
