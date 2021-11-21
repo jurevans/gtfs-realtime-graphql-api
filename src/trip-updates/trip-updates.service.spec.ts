@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { CACHE_MANAGER } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { TripUpdatesService } from 'trip-updates/trip-updates.service';
 import { TripUpdatesResolver } from 'trip-updates/trip-updates.resolver';
-import { ConfigService } from '@nestjs/config';
 import { FeedService } from 'feed/feed.service';
 
 describe('TripUpdatesService', () => {
@@ -9,6 +10,7 @@ describe('TripUpdatesService', () => {
 
   const mockResolver = {};
   const mockConfigService = {};
+  const mockCacheManager = {};
   const mockFeedService = {};
 
   beforeEach(async () => {
@@ -18,6 +20,10 @@ describe('TripUpdatesService', () => {
         {
           provide: TripUpdatesResolver,
           useValue: mockResolver,
+        },
+        {
+          provide: CACHE_MANAGER,
+          useValue: mockCacheManager,
         },
         {
           provide: ConfigService,

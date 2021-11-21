@@ -1,73 +1,158 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# gtfs-realtime-graphql-api
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This API serves GTFS-realtime data via GraphQL. Presently, this is set up for `Alert` and `TripUpdate` data, as defined in `gtfs-realtime.proto` (Read about the GTFS Realtime specification [here](https://developers.google.com/transit/gtfs-realtime))
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project is built off of [transit-app-api](https://github.com/jurevans/transit-app-api), which I developed as a Rest server and WebSocket gateway. This is being split off into multiple projects, currently this one, for serving real-time data, and a future GraphQL API which interfaces with a PostgreSQL/PostGIS database to query static GTFS data.
 
-## Description
+## Table of Contents
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Usage](#usage)
+- [Configuring your environment](#configuring-your-environment)
+- [Compiling .proto files](#compiling)
+- [Running queries](#example-queries)
 
-## Installation
+## Usage:
+
+Running the dev environment:
 
 ```bash
-$ npm install
+npm run start:dev
 ```
 
-## Running the app
+You can now interact with the data at `http://localhost:5000/graphql/`.
+
+Running the tests:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm test
 ```
 
-## Test
+OR
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run test:watch
 ```
 
-## Support
+## Configuring your environment
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Connect to Redis
 
-## Stay in touch
+This application uses Redis for caching, which can be configured in `.env`:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_AUTH=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
 
-## License
+### Additional environment configuration:
 
-Nest is [MIT licensed](LICENSE).
+You will need to configure the GTFS-Realtime endpoint URLs, as well as specify the name of the access key in your `.env` config which corresponds to the value provided by the transit authority to authenticate these requests:
+
+**NOTE**: `routes: []` is an array, or a boolean, and is only used to determine whether we should only request only a particular URL to boost performance. If this parameter is set to true, the API will query this for `TripUpdate` requests.
+
+**NOTE**: `alert: true` will identify an endpoint as an `Alert` for fetching service-alert data. If an endpoint returns `Alert` and `TripUpdate` data, we can set `alert: true` as well as `routes: true`, and the appropriate entity types will be filtered from the response.
+
+```javascript
+const gtfsRealtime = [
+  {
+    feedIndex: 1,
+    agencyId: 'MTA NYCT',
+    feedUrls: [
+      {
+        routes: ['1', '2', '3', '4', '5', '6', '7'],
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs',
+      },
+      {
+        routes: ['A', 'C', 'E'],
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace',
+      },
+      {
+        routes: ['B', 'D', 'F', 'M'],
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm',
+      },
+      {
+        alert: true,
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts',
+      },
+    ],
+    accessKey: 'GTFS_REALTIME_ACCESS_KEY',
+  },
+];
+```
+
+Using the above configuration as an example, you would need the following variable defined in a `.env` file:
+
+```bash
+GTFS_REALTIME_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+**NOTE**: Each feed will have it's own `accessKey`. Having this associated with the GTFS feed configuration allows us to serve multiple feeds from this API, such as subway, metro rail, bus, and ferry.
+
+You will need a unique access key for each group of feed endpoints you want to authenticate. In general, you may only have one configuration in here (for this example, we are configuring for the NYC MTA subway system, but we may want to add endpoints for buses as well). These are keyed by the unique `feedIndex` and `agencyId` values found in the agency table (in this example, `1` and `MTA NYCT`).
+
+The `proto` string refers to a complied `.proto` file that is an extension of the base `gtfs-realtime.proto`, in this case, `nyct-subway.proto`. This gets dynamically loaded should it appear in the config, however, making use of the additional bindings it provides is still in the works.
+
+## Compiling
+
+### .proto compiling
+
+If you have the protobuf-compiler installed (`protoc`), and have a specific `.proto` file you wish to use in addition to `gtfs-realtime.proto`, this can be generated as follows:
+
+From the 'proto/' directory:
+
+```bash
+npx protoc --plugin=../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./ ./path-to-your.proto
+```
+
+`protobufjs` is required to make use of compiled protobufs, and is included in this project's `package.json`.
+
+## Example queries:
+
+NOTE: `feedIndex` corresponds with the index established in a PostgreSQL database containing the GTFS static data. In this project, it is only used to identify which
+config to utilize. A client application will likely use both the static and realtime data, and will need to know which feed to query real-time data for, and this will be identified by `feedIndex`. Otherwise, it only needs to correspond with your configuration in `config/gtfs.config.ts`.
+
+Fetch `TripUpdate` data for routes `A` and `1`, for Feed with `feedIndex` = `1`:
+
+```
+{
+  tripUpdates (
+    feedIndex: 1,
+    routeIds:["A", "1"]
+  ){
+    trip{
+      tripId,
+      routeId,
+      startTime,
+      startDate,
+    }
+  }
+}
+```
+
+Fetch `Alert` data for `feedIndex` = `1`:
+
+```
+{
+  alerts (feedIndex: 1){
+    activePeriod{
+      start,
+      end
+    }
+    informedEntity {
+      routeId
+    }
+    cause,
+    effect,
+    headerText {
+      translation {
+        text
+      }
+    },
+  }
+}
+```
+
+## TODO
+
+- Implement a WebSocket gateway which can also serve `Alert` and `TripUpdate` data.
