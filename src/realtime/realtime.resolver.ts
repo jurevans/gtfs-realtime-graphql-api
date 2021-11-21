@@ -1,4 +1,4 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Query, Resolver } from '@nestjs/graphql';
 import { RealtimeService } from 'realtime/realtime.service';
 import { AlertEntity } from 'realtime/entities/alert.entity';
 
@@ -7,7 +7,9 @@ export class RealtimeResolver {
   constructor(private realtimeService: RealtimeService) {}
 
   @Query(() => [AlertEntity])
-  alerts(): Promise<AlertEntity[]> {
-    return this.realtimeService.getAlerts(1);
+  alerts(
+    @Args('feedIndex', { type: () => Int }) feedIndex: number,
+  ): Promise<AlertEntity[]> {
+    return this.realtimeService.getAlerts(feedIndex);
   }
 }

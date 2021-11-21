@@ -44,5 +44,5 @@ type AlertEntity {
 }
 
 type Query {
-  alerts: [AlertEntity!]!
+  alerts(feedIndex: Int!): [AlertEntity!]!
 }
