@@ -1,0 +1,48 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type TripDescriptorEntity {
+  tripId: String!
+  routeId: String!
+  directionId: Int!
+  startTime: String!
+  startDate: String!
+  scheduleRelationship: Int!
+}
+
+type EntitySelectorEntity {
+  agencyId: String!
+  routeId: String!
+  routeType: Int!
+  trip: TripDescriptorEntity!
+  stopId: String!
+}
+
+type TimeRangeEntity {
+  start: Int!
+  end: Int!
+}
+
+type TranslationEntity {
+  text: String!
+  language: String!
+}
+
+type TranslationStringEntity {
+  translation: [TranslationEntity!]!
+}
+
+type AlertEntity {
+  activePeriod: [TimeRangeEntity!]!
+  informedEntity: [EntitySelectorEntity!]!
+  cause: String!
+  effect: String!
+  url: String!
+  headerText: TranslationStringEntity!
+  descriptionText: TranslationStringEntity!
+}
+
+type Query {
+  alerts: [AlertEntity!]!
+}

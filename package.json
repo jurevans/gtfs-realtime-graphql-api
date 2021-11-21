@@ -31,6 +31,7 @@
     "cache-manager-redis-store": "^2.0.0",
     "graphql": "^15.7.2",
     "graphql-tools": "^8.2.0",
+    "node-fetch": "^2.6.6",
     "protobufjs": "^6.11.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
