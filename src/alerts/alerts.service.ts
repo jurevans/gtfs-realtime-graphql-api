@@ -5,6 +5,7 @@ import { Alert } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
 import { getAlertUrls, getConfigByFeedIndex } from 'util/';
 import { EntityTypes } from 'constants/';
+import { GetAlertsArgs } from 'alerts/alerts.args';
 
 @Injectable()
 export class AlertsService {
@@ -13,7 +14,8 @@ export class AlertsService {
     private readonly feedService: FeedService,
   ) {}
 
-  public async getAlerts(feedIndex: number): Promise<AlertEntity[]> {
+  public async getAlerts(args: GetAlertsArgs): Promise<AlertEntity[]> {
+    const { feedIndex } = args;
     const config = getConfigByFeedIndex(
       this.configService,
       'gtfs-realtime',

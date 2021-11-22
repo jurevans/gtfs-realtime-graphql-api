@@ -5,6 +5,7 @@ import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { FeedService } from 'feed/feed.service';
 import { getConfigByFeedIndex, getUrlsByRouteIds } from 'util/';
 import { EntityTypes } from 'constants/';
+import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
 
 @Injectable()
 export class TripUpdatesService {
@@ -13,7 +14,9 @@ export class TripUpdatesService {
     private readonly feedService: FeedService,
   ) {}
 
-  public async getTripUpdates(feedIndex: number, routeIds: string[]) {
+  public async getTripUpdates(args: GetTripUpdatesArgs) {
+    const { feedIndex, routeIds } = args;
+
     const config = getConfigByFeedIndex(
       this.configService,
       'gtfs-realtime',

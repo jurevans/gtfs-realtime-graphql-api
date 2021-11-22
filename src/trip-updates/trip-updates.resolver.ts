@@ -1,6 +1,7 @@
-import { Args, Int, Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { TripUpdatesService } from 'trip-updates/trip-updates.service';
 import { TripUpdateEntity } from 'entities/trip-update.entity';
+import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
 
 @Resolver(() => TripUpdateEntity)
 export class TripUpdatesResolver {
@@ -8,9 +9,8 @@ export class TripUpdatesResolver {
 
   @Query(() => [TripUpdateEntity])
   tripUpdates(
-    @Args('feedIndex', { type: () => Int }) feedIndex: number,
-    @Args('routeIds', { type: () => [String] }) routeIds: string[],
+    @Args() getTripUpdates: GetTripUpdatesArgs,
   ): Promise<TripUpdateEntity[]> {
-    return this.tripUpdatesService.getTripUpdates(feedIndex, routeIds);
+    return this.tripUpdatesService.getTripUpdates(getTripUpdates);
   }
 }

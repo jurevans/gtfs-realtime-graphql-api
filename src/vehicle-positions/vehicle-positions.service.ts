@@ -5,6 +5,7 @@ import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
 import { FeedService } from 'feed/feed.service';
 import { getConfigByFeedIndex, getUrlsByRouteIds } from 'util/';
 import { EntityTypes } from 'constants/';
+import { GetVehiclePositionsArgs } from 'vehicle-positions/vehicle-positions.args';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -13,7 +14,9 @@ export class VehiclePositionsService {
     private readonly feedService: FeedService,
   ) {}
 
-  async getVehiclePositions(feedIndex: number, routeIds: string[]) {
+  async getVehiclePositions(args: GetVehiclePositionsArgs) {
+    const { feedIndex, routeIds } = args;
+
     const config = getConfigByFeedIndex(
       this.configService,
       'gtfs-realtime',
