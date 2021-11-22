@@ -1,4 +1,4 @@
-import { Args, Int, Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { AlertsService } from 'alerts/alerts.service';
 import { AlertEntity } from 'entities/alert.entity';
 import { GetAlertsArgs } from './alerts.args';
