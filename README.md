@@ -116,48 +116,50 @@ Fetch `TripUpdate` data for routes `A` and `1`, for Feed with `feedIndex` = `1`:
 
 ```
 {
-  tripUpdates (
-    feedIndex: 1,
-    routeIds:["A", "1"]
-  ){
-    trip{
-      tripId,
-      routeId,
-      startTime,
-      startDate,
+  tripUpdates(feedIndex: 1, routeIds:["1", "A", "G"]) {
+    trip {
+      tripId
+      routeId
+      startTime
+      startDate
+    }
+    vehicle {
+      licensePlate
     }
   }
 }
+
 ```
 
 Fetch `Alert` data for `feedIndex` = `1`:
 
 ```
 {
-  alerts (feedIndex: 1){
-    activePeriod{
-      start,
+  alerts(feedIndex: 1, routeIds: ["1"]) {
+    activePeriod {
+      start
       end
     }
     informedEntity {
       routeId
     }
-    cause,
-    effect,
+    cause
+    effect
     headerText {
       translation {
         text
       }
-    },
+    }
   }
 }
+
 ```
 
 Fetch `VehiclePosition` data for route IDs `A` and `1`, with `feedIndex` = `1`
 
 ```
 {
-  vehiclePositions(feedIndex: 1, routeIds: ["A", "1"]) {
+  vehiclePositions(feedIndex: 1, routeIds: ["A"]) {
     stopId
     timestamp
     occupancyStatus
@@ -165,6 +167,7 @@ Fetch `VehiclePosition` data for route IDs `A` and `1`, with `feedIndex` = `1`
     currentStatus
     trip {
       tripId
+      routeId
       startTime
       startDate
     }
