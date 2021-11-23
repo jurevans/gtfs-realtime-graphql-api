@@ -2,7 +2,7 @@
 
 This API serves GTFS-realtime data via GraphQL. Presently, this is set up for `Alert` and `TripUpdate` data, as defined in `gtfs-realtime.proto` (Read about the GTFS Realtime specification [here](https://developers.google.com/transit/gtfs-realtime))
 
-This project is built off of [transit-app-api](https://github.com/jurevans/transit-app-api), which I developed as a Rest server and WebSocket gateway. This is being split off into multiple projects, currently this one, for serving real-time data, and a future GraphQL API which interfaces with a PostgreSQL/PostGIS database to query static GTFS data.
+This project is built off of [transit-app-api](https://github.com/jurevans/transit-app-api), which I developed as a Rest API and WebSocket gateway. This is being split off into multiple projects, currently this one, for serving real-time data, and a future GraphQL API which interfaces with a PostgreSQL/PostGIS database to query static GTFS data.
 
 ## Table of Contents
 
