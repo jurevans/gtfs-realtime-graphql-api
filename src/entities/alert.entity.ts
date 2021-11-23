@@ -18,8 +18,8 @@ export class AlertEntity {
   @Field()
   effect: string;
 
-  @Field()
-  url: string;
+  @Field({ nullable: true })
+  url?: string;
 
   @Field(() => TranslationStringEntity)
   headerText: TranslationStringEntity;

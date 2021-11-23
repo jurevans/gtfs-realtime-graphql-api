@@ -38,7 +38,7 @@ type AlertEntity {
   informedEntity: [EntitySelectorEntity!]!
   cause: String!
   effect: String!
-  url: String!
+  url: String
   headerText: TranslationStringEntity!
   descriptionText: TranslationStringEntity!
 }
@@ -92,7 +92,7 @@ type VehiclePositionEntity {
 }
 
 type Query {
-  alerts(feedIndex: Int!): [AlertEntity!]!
-  tripUpdates(routeIds: [String!]!, feedIndex: Int!): [TripUpdateEntity!]!
-  vehiclePositions(routeIds: [String!]!, feedIndex: Int!): [VehiclePositionEntity!]!
+  alerts(routeIds: [String!] = [], feedIndex: Int!): [AlertEntity!]!
+  tripUpdates(routeIds: [String!] = [], minutes: Int, timezone: String, feedIndex: Int!): [TripUpdateEntity!]!
+  vehiclePositions(routeIds: [String!]!, minutes: Int, timezone: String, feedIndex: Int!): [VehiclePositionEntity!]!
 }
