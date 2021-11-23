@@ -76,6 +76,7 @@ const gtfsRealtime = [
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts',
       },
     ],
+    // Name of access key to load from .env
     accessKey: 'GTFS_REALTIME_ACCESS_KEY',
   },
 ];
@@ -91,11 +92,11 @@ GTFS_REALTIME_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 You will need a unique access key for each group of feed endpoints you want to authenticate. In general, you may only have one configuration in here (for this example, we are configuring for the NYC MTA subway system, but we may want to add endpoints for buses as well). These are keyed by the unique `feedIndex` and `agencyId` values found in the agency table (in this example, `1` and `MTA NYCT`).
 
-The `proto` string refers to a complied `.proto` file that is an extension of the base `gtfs-realtime.proto`, in this case, `nyct-subway.proto`. This gets dynamically loaded should it appear in the config, however, making use of the additional bindings it provides is still in the works.
-
 ## Compiling
 
-### .proto compiling
+### Notes on .proto compiling
+
+The `src/proto/gtfs-realtime.ts` file is generated using `protoc` and the `gtfs-realtime.proto` file (found [here](https://developers.google.com/transit/gtfs-realtime/gtfs-realtime.proto)). This file does not need to change, but notes on generating this file are below:
 
 If you have the protobuf-compiler installed (`protoc`), and have a specific `.proto` file you wish to use in addition to `gtfs-realtime.proto`, this can be generated as follows:
 
@@ -107,7 +108,7 @@ npx protoc --plugin=../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./ .
 
 `protobufjs` is required to make use of compiled protobufs, and is included in this project's `package.json`.
 
-## Example queries:
+## Example queries
 
 NOTE: `feedIndex` corresponds with the index established in a PostgreSQL database containing the GTFS static data. In this project, it is only used to identify which
 config to utilize. A client application will likely use both the static and realtime data, and will need to know which feed to query real-time data for, and this will be identified by `feedIndex`. Otherwise, it only needs to correspond with your configuration in `config/gtfs.config.ts`.
@@ -178,7 +179,3 @@ Fetch `VehiclePosition` data for route IDs `A` and `1`, with `feedIndex` = `1`
   }
 }
 ```
-
-## TODO
-
-- Implement a WebSocket gateway which can also serve `Alert`, `TripUpdate`, and `VehiclePosition` data.
