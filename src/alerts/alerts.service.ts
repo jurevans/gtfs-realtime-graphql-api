@@ -6,7 +6,7 @@ import { AlertEntity } from 'entities/alert.entity';
 import {
   filterAlertsByRouteIds,
   getAlertUrls,
-  getConfigByFeedIndex,
+  getGTFSConfigByFeedIndex,
 } from 'util/';
 import { EntityTypes } from 'constants/';
 import { GetAlertsArgs } from 'alerts/alerts.args';
@@ -26,11 +26,7 @@ export class AlertsService {
     const { feedIndex } = args;
     const { routeIds } = filter;
 
-    const config = getConfigByFeedIndex(
-      this.configService,
-      'gtfs-realtime',
-      feedIndex,
-    );
+    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
 
     if (!config) {
       throw new HttpException(

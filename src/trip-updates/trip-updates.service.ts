@@ -5,7 +5,7 @@ import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { FeedService } from 'feed/feed.service';
 import {
   filterTripEntitiesByRouteIds,
-  getConfigByFeedIndex,
+  getGTFSConfigByFeedIndex,
   getUrlsByRouteIds,
 } from 'util/';
 import { EntityTypes } from 'constants/';
@@ -26,11 +26,7 @@ export class TripUpdatesService {
     const { feedIndex } = args;
     const { routeIds } = filter;
 
-    const config = getConfigByFeedIndex(
-      this.configService,
-      'gtfs-realtime',
-      feedIndex,
-    );
+    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
 
     if (!config) {
       throw new HttpException(
