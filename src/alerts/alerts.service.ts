@@ -3,9 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { FeedService } from 'feed/feed.service';
 import { Alert } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
-import { getAlertUrls, getConfigByFeedIndex } from 'util/';
+import {
+  filterAlertsByRouteIds,
+  getAlertUrls,
+  getConfigByFeedIndex,
+} from 'util/';
 import { EntityTypes } from 'constants/';
 import { GetAlertsArgs } from 'alerts/alerts.args';
+import { FilterArgs } from 'args/filter.args';
 
 @Injectable()
 export class AlertsService {
@@ -14,8 +19,13 @@ export class AlertsService {
     private readonly feedService: FeedService,
   ) {}
 
-  public async getAlerts(args: GetAlertsArgs): Promise<AlertEntity[]> {
+  public async getAlerts(
+    args: GetAlertsArgs,
+    filter: FilterArgs,
+  ): Promise<AlertEntity[]> {
     const { feedIndex } = args;
+    const { routeIds } = filter;
+
     const config = getConfigByFeedIndex(
       this.configService,
       'gtfs-realtime',
@@ -40,6 +50,10 @@ export class AlertsService {
         type: EntityTypes.ALERT,
       },
     );
+
+    if (routeIds.length > 0) {
+      return <AlertEntity[]>filterAlertsByRouteIds(entities, routeIds);
+    }
 
     return <AlertEntity[]>entities;
   }

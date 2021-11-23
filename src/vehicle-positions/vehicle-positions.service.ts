@@ -3,9 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { VehiclePosition } from 'proto/gtfs-realtime';
 import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
 import { FeedService } from 'feed/feed.service';
-import { getConfigByFeedIndex, getUrlsByRouteIds } from 'util/';
+import {
+  filterTripEntitiesByRouteIds,
+  getConfigByFeedIndex,
+  getUrlsByRouteIds,
+} from 'util/';
 import { EntityTypes } from 'constants/';
 import { GetVehiclePositionsArgs } from 'vehicle-positions/vehicle-positions.args';
+import { RouteFilterArgs } from 'args/route-filter.args';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -14,8 +19,12 @@ export class VehiclePositionsService {
     private readonly feedService: FeedService,
   ) {}
 
-  async getVehiclePositions(args: GetVehiclePositionsArgs) {
-    const { feedIndex, routeIds } = args;
+  async getVehiclePositions(
+    args: GetVehiclePositionsArgs,
+    filter: RouteFilterArgs,
+  ) {
+    const { feedIndex } = args;
+    const { routeIds } = filter;
 
     const config = getConfigByFeedIndex(
       this.configService,
@@ -42,6 +51,13 @@ export class VehiclePositionsService {
       entity: VehiclePositionEntity,
       type: EntityTypes.VEHICLE_POSITION,
     });
+
+    if (routeIds.length > 0) {
+      return filterTripEntitiesByRouteIds<VehiclePositionEntity>(
+        entities,
+        routeIds,
+      );
+    }
 
     return <VehiclePositionEntity[]>entities;
   }

@@ -1,5 +1,5 @@
 import { ArgsType, Int, Field } from '@nestjs/graphql';
-import { IsInt, IsArray, Min } from 'class-validator';
+import { IsInt, Min } from 'class-validator';
 
 @ArgsType()
 export class GetTripUpdatesArgs {
@@ -7,8 +7,4 @@ export class GetTripUpdatesArgs {
   @IsInt()
   @Min(1)
   feedIndex: number;
-
-  @Field(() => [String])
-  @IsArray()
-  routeIds: string[];
 }

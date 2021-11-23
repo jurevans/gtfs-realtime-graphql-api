@@ -3,9 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { TripUpdate } from 'proto/gtfs-realtime';
 import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { FeedService } from 'feed/feed.service';
-import { getConfigByFeedIndex, getUrlsByRouteIds } from 'util/';
+import {
+  filterTripEntitiesByRouteIds,
+  getConfigByFeedIndex,
+  getUrlsByRouteIds,
+} from 'util/';
 import { EntityTypes } from 'constants/';
 import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
+import { RouteFilterArgs } from 'args/route-filter.args';
 
 @Injectable()
 export class TripUpdatesService {
@@ -14,8 +19,12 @@ export class TripUpdatesService {
     private readonly feedService: FeedService,
   ) {}
 
-  public async getTripUpdates(args: GetTripUpdatesArgs) {
-    const { feedIndex, routeIds } = args;
+  public async getTripUpdates(
+    args: GetTripUpdatesArgs,
+    filter: RouteFilterArgs,
+  ) {
+    const { feedIndex } = args;
+    const { routeIds } = filter;
 
     const config = getConfigByFeedIndex(
       this.configService,
@@ -43,6 +52,9 @@ export class TripUpdatesService {
       type: EntityTypes.TRIP_UPDATE,
     });
 
+    if (routeIds.length > 0) {
+      return filterTripEntitiesByRouteIds<TripUpdateEntity>(entities, routeIds);
+    }
     return <TripUpdateEntity[]>entities;
   }
 }

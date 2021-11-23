@@ -1,6 +1,13 @@
 import { ConfigService } from '@nestjs/config';
+import { TripDescriptorEntity } from 'entities/trip-descriptor.entity';
 import { IEndpoint } from 'interfaces/endpoint.interface';
-import { FeedEntity, FeedMessage, TranslatedString } from 'proto/gtfs-realtime';
+import {
+  EntitySelector,
+  FeedEntity,
+  FeedMessage,
+  TranslatedString,
+} from 'proto/gtfs-realtime';
+import { AlertEntity } from 'entities/alert.entity';
 
 /**
  * Get config from ConfigService
@@ -91,3 +98,37 @@ export const getAlertUrls = (feedUrls: IEndpoint[]): string[] =>
   feedUrls
     .filter((endpoint: IEndpoint) => endpoint.alert === true)
     .map((endpoint: IEndpoint) => endpoint.url);
+
+/**
+ * Filter entities array by array of routeIds
+ * @param entities
+ * @param routeIds
+ * @param type
+ * @returns {T[]}
+ */
+export const filterTripEntitiesByRouteIds = <T>(
+  entities: T[],
+  routeIds: string[],
+): T[] =>
+  <T[]>(
+    entities.filter((entity: T & { trip: TripDescriptorEntity }) =>
+      routeIds.some((routeId: string) => routeId === entity.trip.routeId),
+    )
+  );
+
+/**
+ * Filter alert entities by array of routeIds
+ * @param entities
+ * @param routeIds
+ * @returns {AlertEntity[]}
+ */
+export const filterAlertsByRouteIds = (
+  entities: AlertEntity[],
+  routeIds: string[],
+) => <AlertEntity[]>entities.filter((entity: AlertEntity) => {
+    const { informedEntity } = entity;
+    const entities = informedEntity.filter((entity: EntitySelector) =>
+      routeIds.some((routeId: string) => routeId === entity.routeId),
+    );
+    return entities.length > 0;
+  });
