@@ -9,8 +9,8 @@ import {
   getUrlsByRouteIds,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { FilterVehiclePositionsArgs } from 'vehicle-positions/vehicle-positions.args';
-import { FeedArgs } from 'args/feed.args';
+import { GetVehiclePositionsArgs } from './vehicle-positions.args';
+import { FilterVehiclePositionsArgs } from 'vehicle-positions/filter-vehicle-positions.args';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -20,7 +20,7 @@ export class VehiclePositionsService {
   ) {}
 
   async getVehiclePositions(
-    args: FeedArgs,
+    args: GetVehiclePositionsArgs,
     filter: FilterVehiclePositionsArgs,
   ) {
     const { feedIndex } = args;

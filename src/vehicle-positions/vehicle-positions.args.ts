@@ -1,8 +1,11 @@
 import { ArgsType, Field } from '@nestjs/graphql';
-import { FilterRoutesArgs } from 'args/filter-routes.args';
+import { FeedArgs } from 'args/feed.args';
 
 @ArgsType()
-export class FilterVehiclePositionsArgs extends FilterRoutesArgs {
+export class GetVehiclePositionsArgs extends FeedArgs {
   @Field({ nullable: true })
   stopId?: string;
+
+  @Field({ nullable: true })
+  currentStatus?: string;
 }

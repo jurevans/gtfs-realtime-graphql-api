@@ -9,8 +9,8 @@ import {
   getUrlsByRouteIds,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { FilterTripUpdatesArgs } from 'trip-updates/trip-updates.args';
-import { FeedArgs } from 'args/feed.args';
+import { FilterTripUpdatesArgs } from 'trip-updates/filter-trip-updates.args';
+import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
 
 @Injectable()
 export class TripUpdatesService {
@@ -19,7 +19,10 @@ export class TripUpdatesService {
     private readonly feedService: FeedService,
   ) {}
 
-  public async getTripUpdates(args: FeedArgs, filter: FilterTripUpdatesArgs) {
+  public async getTripUpdates(
+    args: GetTripUpdatesArgs,
+    filter: FilterTripUpdatesArgs,
+  ) {
     const { feedIndex } = args;
     const { routeIds } = filter;
 

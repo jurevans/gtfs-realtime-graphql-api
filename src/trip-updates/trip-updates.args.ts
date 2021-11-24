@@ -1,9 +1,9 @@
 import { ArgsType, Int, Field } from '@nestjs/graphql';
 import { IsInt } from 'class-validator';
-import { FilterRoutesArgs } from 'args/filter-routes.args';
+import { FeedArgs } from 'args/feed.args';
 
 @ArgsType()
-export class FilterTripUpdatesArgs extends FilterRoutesArgs {
+export class GetTripUpdatesArgs extends FeedArgs {
   @Field(() => Int, { nullable: true })
   @IsInt()
   minutes?: number;
