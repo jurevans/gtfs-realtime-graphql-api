@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import fetch from 'node-fetch';
 import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
-import { getConfigByFeedIndex, getFeedEntitiesByType } from 'util/';
+import { getGTFSConfigByFeedIndex, getFeedEntitiesByType } from 'util/';
 
 @Injectable()
 export class FeedService {
@@ -48,11 +48,7 @@ export class FeedService {
       return feedMessageInCache;
     }
 
-    const config = getConfigByFeedIndex(
-      this.configService,
-      'gtfs-realtime',
-      feedIndex,
-    );
+    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
     const { accessKey } = config;
     const accessKeyValue = this.configService.get(accessKey);
     const options = {

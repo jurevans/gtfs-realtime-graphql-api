@@ -10,19 +10,17 @@ import {
 import { AlertEntity } from 'entities/alert.entity';
 
 /**
- * Get config from ConfigService
+ * Get GTFS config from ConfigService
  * @param configService
- * @param configKey
  * @param feedIndex
  * @returns {config}
  */
-export const getConfigByFeedIndex: any = (
+export const getGTFSConfigByFeedIndex: any = (
   configService: ConfigService,
-  configKey: string,
   feedIndex: number,
 ) => {
   return configService
-    .get(configKey)
+    .get('gtfs-realtime')
     .find((config: any) => config.feedIndex === feedIndex);
 };
 

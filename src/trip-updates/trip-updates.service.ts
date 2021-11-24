@@ -5,12 +5,12 @@ import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { FeedService } from 'feed/feed.service';
 import {
   filterTripEntitiesByRouteIds,
-  getConfigByFeedIndex,
+  getGTFSConfigByFeedIndex,
   getUrlsByRouteIds,
 } from 'util/';
 import { EntityTypes } from 'constants/';
+import { FilterTripUpdatesArgs } from 'trip-updates/filter-trip-updates.args';
 import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
-import { RouteFilterArgs } from 'args/route-filter.args';
 
 @Injectable()
 export class TripUpdatesService {
@@ -21,16 +21,12 @@ export class TripUpdatesService {
 
   public async getTripUpdates(
     args: GetTripUpdatesArgs,
-    filter: RouteFilterArgs,
+    filter: FilterTripUpdatesArgs,
   ) {
     const { feedIndex } = args;
     const { routeIds } = filter;
 
-    const config = getConfigByFeedIndex(
-      this.configService,
-      'gtfs-realtime',
-      feedIndex,
-    );
+    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
 
     if (!config) {
       throw new HttpException(

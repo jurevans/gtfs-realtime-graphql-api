@@ -1,10 +1,13 @@
 import { ArgsType, Int, Field } from '@nestjs/graphql';
-import { IsInt, Min } from 'class-validator';
+import { IsInt } from 'class-validator';
+import { FeedArgs } from 'args/feed.args';
 
 @ArgsType()
-export class GetTripUpdatesArgs {
-  @Field(() => Int)
+export class GetTripUpdatesArgs extends FeedArgs {
+  @Field(() => Int, { nullable: true })
   @IsInt()
-  @Min(1)
-  feedIndex: number;
+  minutes?: number;
+
+  @Field({ nullable: true })
+  timezone?: string;
 }

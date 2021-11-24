@@ -92,7 +92,7 @@ type VehiclePositionEntity {
 }
 
 type Query {
-  alerts(routeIds: [String!] = [], feedIndex: Int!): [AlertEntity!]!
-  tripUpdates(routeIds: [String!] = [], minutes: Int, timezone: String, feedIndex: Int!): [TripUpdateEntity!]!
-  vehiclePositions(routeIds: [String!]!, minutes: Int, timezone: String, feedIndex: Int!): [VehiclePositionEntity!]!
+  alerts(routeIds: [String!] = [], feedIndex: Int!, translation: [String!], start: Int, end: Int): [AlertEntity!]!
+  tripUpdates(routeIds: [String!] = [], feedIndex: Int!, minutes: Int, timezone: String): [TripUpdateEntity!]!
+  vehiclePositions(routeIds: [String!] = [], feedIndex: Int!, stopId: String, currentStatus: String): [VehiclePositionEntity!]!
 }

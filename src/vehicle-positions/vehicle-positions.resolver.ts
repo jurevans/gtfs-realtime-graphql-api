@@ -2,7 +2,7 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { VehiclePositionsService } from 'vehicle-positions/vehicle-positions.service';
 import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
 import { GetVehiclePositionsArgs } from 'vehicle-positions/vehicle-positions.args';
-import { RouteFilterArgs } from 'args/route-filter.args';
+import { FilterVehiclePositionsArgs } from 'vehicle-positions/filter-vehicle-positions.args';
 
 @Resolver(() => VehiclePositionEntity)
 export class VehiclePositionsResolver {
@@ -11,7 +11,7 @@ export class VehiclePositionsResolver {
   @Query(() => [VehiclePositionEntity])
   vehiclePositions(
     @Args() getVehiclePositionsArgs: GetVehiclePositionsArgs,
-    @Args() filter: RouteFilterArgs,
+    @Args() filter: FilterVehiclePositionsArgs,
   ): Promise<VehiclePositionEntity[]> {
     return this.vehiclePositionsService.getVehiclePositions(
       getVehiclePositionsArgs,

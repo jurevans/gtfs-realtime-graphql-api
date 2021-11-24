@@ -5,12 +5,12 @@ import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
 import { FeedService } from 'feed/feed.service';
 import {
   filterTripEntitiesByRouteIds,
-  getConfigByFeedIndex,
+  getGTFSConfigByFeedIndex,
   getUrlsByRouteIds,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { GetVehiclePositionsArgs } from 'vehicle-positions/vehicle-positions.args';
-import { RouteFilterArgs } from 'args/route-filter.args';
+import { GetVehiclePositionsArgs } from './vehicle-positions.args';
+import { FilterVehiclePositionsArgs } from 'vehicle-positions/filter-vehicle-positions.args';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -21,16 +21,12 @@ export class VehiclePositionsService {
 
   async getVehiclePositions(
     args: GetVehiclePositionsArgs,
-    filter: RouteFilterArgs,
+    filter: FilterVehiclePositionsArgs,
   ) {
     const { feedIndex } = args;
     const { routeIds } = filter;
 
-    const config = getConfigByFeedIndex(
-      this.configService,
-      'gtfs-realtime',
-      feedIndex,
-    );
+    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
 
     if (!config) {
       throw new HttpException(
