@@ -179,3 +179,12 @@ Fetch `VehiclePosition` data for route IDs `A` and `1`, with `feedIndex` = `1`
   }
 }
 ```
+
+## TODO
+
+Upcoming improvements to the API:
+
+- `TripUpdate` data should be able to be queried by a time-range. This could be specified in minutes, as in specifying `minutes: 30` or `minutes: 60` in the query to say, _"give me only trips that will arrive in the next 30 or 60 minutes please!"_
+- `Alert` data should allow for status queries, delays, or start and end times
+- `VehiclePosition` data should be able to be queried by `currentStatus` and `stopId` to narrow focus to particular part of the feed.
+- I have plans to implement a WebSocket Gateway, either in this project or in a future project. This could utilize GraphQL subscriptions such that when new feeds are requested (on an interval, perhaps specified by the client, with a rational default in place), this data is sent up to the client from the backend.
