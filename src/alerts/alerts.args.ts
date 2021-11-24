@@ -1,10 +1,5 @@
-import { ArgsType, Int, Field } from '@nestjs/graphql';
-import { IsInt, Min } from 'class-validator';
+import { ArgsType } from '@nestjs/graphql';
+import { FilterRoutesArgs } from 'args/filter-routes.args';
 
 @ArgsType()
-export class GetAlertsArgs {
-  @Field(() => Int)
-  @IsInt()
-  @Min(1)
-  feedIndex: number;
-}
+export class FilterAlertsArgs extends FilterRoutesArgs {}

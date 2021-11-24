@@ -1,7 +1,7 @@
 import { ArgsType, Field } from '@nestjs/graphql';
 
 @ArgsType()
-export class FilterArgs {
+export class FilterRoutesArgs {
   @Field(() => [String], { defaultValue: [] })
   routeIds: string[];
 }

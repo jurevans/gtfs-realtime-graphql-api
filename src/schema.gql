@@ -94,5 +94,5 @@ type VehiclePositionEntity {
 type Query {
   alerts(routeIds: [String!] = [], feedIndex: Int!): [AlertEntity!]!
   tripUpdates(routeIds: [String!] = [], minutes: Int, timezone: String, feedIndex: Int!): [TripUpdateEntity!]!
-  vehiclePositions(routeIds: [String!]!, minutes: Int, timezone: String, feedIndex: Int!): [VehiclePositionEntity!]!
+  vehiclePositions(routeIds: [String!] = [], stopId: String, feedIndex: Int!): [VehiclePositionEntity!]!
 }

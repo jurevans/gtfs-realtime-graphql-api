@@ -1,14 +1,8 @@
-import { ArgsType, Int, Field } from '@nestjs/graphql';
-import { IsArray, IsInt, Min } from 'class-validator';
+import { ArgsType, Field } from '@nestjs/graphql';
+import { FilterRoutesArgs } from 'args/filter-routes.args';
 
 @ArgsType()
-export class GetVehiclePositionsArgs {
-  @Field(() => Int)
-  @IsInt()
-  @Min(1)
-  feedIndex: number;
-
-  @Field(() => [String])
-  @IsArray()
-  routeIds: string[];
+export class FilterVehiclePositionsArgs extends FilterRoutesArgs {
+  @Field({ nullable: true })
+  stopId?: string;
 }

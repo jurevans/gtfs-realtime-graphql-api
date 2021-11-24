@@ -9,8 +9,8 @@ import {
   getGTFSConfigByFeedIndex,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { GetAlertsArgs } from 'alerts/alerts.args';
-import { FilterArgs } from 'args/filter.args';
+import { FeedArgs } from 'args/feed.args';
+import { FilterAlertsArgs } from 'alerts/alerts.args';
 
 @Injectable()
 export class AlertsService {
@@ -20,8 +20,8 @@ export class AlertsService {
   ) {}
 
   public async getAlerts(
-    args: GetAlertsArgs,
-    filter: FilterArgs,
+    args: FeedArgs,
+    filter: FilterAlertsArgs,
   ): Promise<AlertEntity[]> {
     const { feedIndex } = args;
     const { routeIds } = filter;
