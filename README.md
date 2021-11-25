@@ -2,7 +2,7 @@
 
 This API serves GTFS-realtime data via GraphQL. Presently, this is set up for `Alert` and `TripUpdate` data, as defined in `gtfs-realtime.proto` (Read about the GTFS Realtime specification [here](https://developers.google.com/transit/gtfs-realtime))
 
-This project is built off of [transit-app-api](https://github.com/jurevans/transit-app-api), which I developed as a Rest API and WebSocket gateway. This is being split off into multiple projects, currently this one, for serving real-time data, and a future GraphQL API which interfaces with a PostgreSQL/PostGIS database to query static GTFS data.
+To serve the GTFS-static data via GraphQL see [gtfs-graphql-api](https://github.com/jurevans/gtfs-graphql-api).
 
 ## Table of Contents
 
@@ -111,13 +111,13 @@ npx protoc --plugin=../node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./ .
 ## Example queries
 
 NOTE: `feedIndex` corresponds with the index established in a PostgreSQL database containing the GTFS static data. In this project, it is only used to identify which
-config to utilize. A client application will likely use both the static and realtime data, and will need to know which feed to query real-time data for, and this will be identified by `feedIndex`. Otherwise, it only needs to correspond with your configuration in `config/gtfs.config.ts`.
+config to utilize. A client application will likely use both the static and realtime data, and will need to know which feed to query real-time data for, and this will be identified by `feedIndex`. Otherwise, it only needs to correspond with your configuration in `config/gtfs.config.ts`. See the [gtfs-graphql-api](https://github.com/jurevans/gtfs-graphql-api) project for serving the static GTFS feeds that correspond with these real-time feeds.
 
 Fetch `TripUpdate` data for routes `A` and `1`, for Feed with `feedIndex` = `1`:
 
-```
+```graphql
 {
-  tripUpdates(feedIndex: 1, routeIds:["1", "A", "G"]) {
+  tripUpdates(feedIndex: 1, routeIds: ["1", "A", "G"]) {
     trip {
       tripId
       routeId
@@ -129,12 +129,11 @@ Fetch `TripUpdate` data for routes `A` and `1`, for Feed with `feedIndex` = `1`:
     }
   }
 }
-
 ```
 
 Fetch `Alert` data for `feedIndex` = `1`:
 
-```
+```graphql
 {
   alerts(feedIndex: 1, routeIds: ["1"]) {
     activePeriod {
@@ -153,12 +152,11 @@ Fetch `Alert` data for `feedIndex` = `1`:
     }
   }
 }
-
 ```
 
 Fetch `VehiclePosition` data for route IDs `A` and `1`, with `feedIndex` = `1`
 
-```
+```graphql
 {
   vehiclePositions(feedIndex: 1, routeIds: ["A"]) {
     stopId
