@@ -8,8 +8,8 @@ import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
 export class TripUpdatesResolver {
   constructor(private tripUpdatesService: TripUpdatesService) {}
 
-  @Query(() => [TripUpdateEntity])
-  tripUpdates(
+  @Query(() => [TripUpdateEntity], { name: 'tripUpdates' })
+  getTripUpdates(
     @Args() getTripUpdates: GetTripUpdatesArgs,
     @Args() filter: FilterTripUpdatesArgs,
   ): Promise<TripUpdateEntity[]> {

@@ -8,8 +8,8 @@ import { FilterVehiclePositionsArgs } from 'vehicle-positions/filter-vehicle-pos
 export class VehiclePositionsResolver {
   constructor(private vehiclePositionsService: VehiclePositionsService) {}
 
-  @Query(() => [VehiclePositionEntity])
-  vehiclePositions(
+  @Query(() => [VehiclePositionEntity], { name: 'vehiclePositions' })
+  getVehiclePositions(
     @Args() getVehiclePositionsArgs: GetVehiclePositionsArgs,
     @Args() filter: FilterVehiclePositionsArgs,
   ): Promise<VehiclePositionEntity[]> {
