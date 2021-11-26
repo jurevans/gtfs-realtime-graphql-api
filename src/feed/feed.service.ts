@@ -61,10 +61,8 @@ export class FeedService {
     const response = await fetch(url, options);
     const buffer = await response.buffer();
     const feedMessage = FeedMessage.decode(buffer);
+    this.cacheManager.set(url, feedMessage);
 
-    const feedMessageJSON = FeedMessage.toJSON(feedMessage);
-    this.cacheManager.set(url, feedMessageJSON);
-
-    return await this.cacheManager.get(url);
+    return feedMessage;
   }
 }
