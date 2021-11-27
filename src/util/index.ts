@@ -8,6 +8,7 @@ import {
   TranslatedString,
 } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
+import { EntityTypes } from 'constants/';
 
 /**
  * Get GTFS config from ConfigService
@@ -66,10 +67,10 @@ export const getFeedEntitiesByType = (
  * @param routeIds
  * @returns {string[]}
  */
-export const getUrlsByRouteIds = (
+export const getEndpointsByRouteIds = (
   feedUrls: IEndpoint[],
   routeIds: string[],
-): string[] => {
+): IEndpoint[] => {
   const endpoints = routeIds
     ? feedUrls.filter((endpoint: IEndpoint) => {
         if (routeIds.length > 0 && endpoint.hasOwnProperty('routes')) {
@@ -84,7 +85,7 @@ export const getUrlsByRouteIds = (
       })
     : feedUrls;
 
-  return endpoints.map((endpoint: IEndpoint) => endpoint.url);
+  return endpoints;
 };
 
 /**
@@ -92,9 +93,17 @@ export const getUrlsByRouteIds = (
  * @param feedUrls
  * @returns {string[]}
  */
-export const getAlertUrls = (feedUrls: IEndpoint[]): string[] =>
+type EndpointTypes =
+  | EntityTypes.ALERT
+  | EntityTypes.TRIP_UPDATE
+  | EntityTypes.VEHICLE_POSITION;
+
+export const getUrlsByType = (
+  feedUrls: IEndpoint[],
+  type: EndpointTypes,
+): string[] =>
   feedUrls
-    .filter((endpoint: IEndpoint) => endpoint.alert === true)
+    .filter((endpoint: IEndpoint) => endpoint[type] === true)
     .map((endpoint: IEndpoint) => endpoint.url);
 
 /**

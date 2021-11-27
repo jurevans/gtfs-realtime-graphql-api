@@ -5,12 +5,14 @@ import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { FeedService } from 'feed/feed.service';
 import {
   filterTripEntitiesByRouteIds,
+  getEndpointsByRouteIds,
   getGTFSConfigByFeedIndex,
-  getUrlsByRouteIds,
+  getUrlsByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
 import { FilterTripUpdatesArgs } from 'trip-updates/filter-trip-updates.args';
 import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
+import { IEndpoint } from 'interfaces/endpoint.interface';
 
 @Injectable()
 export class TripUpdatesService {
@@ -36,7 +38,15 @@ export class TripUpdatesService {
     }
 
     const { feedUrls } = config;
-    const urls = getUrlsByRouteIds(feedUrls, routeIds);
+    const endpoints: IEndpoint[] = [];
+
+    if (routeIds.length > 0) {
+      endpoints.push(...getEndpointsByRouteIds(feedUrls, routeIds));
+    } else {
+      endpoints.push(...feedUrls);
+    }
+
+    const urls = getUrlsByType(endpoints, EntityTypes.TRIP_UPDATE);
 
     const entities = await this.feedService.getFeedMessages<
       TripUpdateEntity,

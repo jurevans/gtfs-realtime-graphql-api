@@ -5,7 +5,7 @@ import { Alert } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
 import {
   filterAlertsByRouteIds,
-  getAlertUrls,
+  getUrlsByType,
   getGTFSConfigByFeedIndex,
 } from 'util/';
 import { EntityTypes } from 'constants/';
@@ -36,7 +36,7 @@ export class AlertsService {
     }
 
     const { feedUrls } = config;
-    const urls = getAlertUrls(feedUrls);
+    const urls = getUrlsByType(feedUrls, EntityTypes.ALERT);
 
     const entities = await this.feedService.getFeedMessages<AlertEntity, Alert>(
       {
