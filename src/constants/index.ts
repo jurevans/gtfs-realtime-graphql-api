@@ -1,4 +1,6 @@
 export enum CacheTtlSeconds {
+  FIVE_SECONDS = 5,
+  TEN_SECONDS = 10,
   THIRTY_SECONDS = 30,
   ONE_MINUTE = 60,
   ONE_HOUR = 60 * 60,

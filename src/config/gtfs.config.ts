@@ -4,6 +4,7 @@ export default registerAs('gtfs-realtime', () => [
   {
     feedIndex: 1,
     agencyId: 'MTA NYCT',
+    accessKey: 'MTA_SUBWAY_API_KEY',
     endpoints: [
       {
         tripUpdate: true,
@@ -58,11 +59,10 @@ export default registerAs('gtfs-realtime', () => [
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts',
       },
     ],
-    // Name of access key to load from .env
-    accessKey: 'MTA_SUBWAY_API_KEY',
   },
   {
     feedIndex: 2,
+    accessKey: 'MTA_BUS_API_KEY',
     endpoints: [
       {
         tripUpdate: true,
@@ -77,6 +77,5 @@ export default registerAs('gtfs-realtime', () => [
         url: 'http://gtfsrt.prod.obanyc.com/alerts',
       },
     ],
-    accessKey: 'MTA_BUS_API_KEY',
   },
 ]);

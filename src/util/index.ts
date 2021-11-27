@@ -68,11 +68,11 @@ export const getFeedEntitiesByType = (
  * @returns {string[]}
  */
 export const getEndpointsByRouteIds = (
-  feedUrls: IEndpoint[],
+  endpoints: IEndpoint[],
   routeIds: string[],
-): IEndpoint[] => {
-  const endpoints = routeIds
-    ? feedUrls.filter((endpoint: IEndpoint) => {
+): IEndpoint[] =>
+  routeIds
+    ? endpoints.filter((endpoint: IEndpoint) => {
         if (routeIds.length > 0 && endpoint.hasOwnProperty('routes')) {
           if (endpoint.routes.some) {
             return endpoint.routes.some(
@@ -81,12 +81,9 @@ export const getEndpointsByRouteIds = (
           }
           return false;
         }
-        return !!endpoint.routes;
+        return true;
       })
-    : feedUrls;
-
-  return endpoints;
-};
+    : endpoints;
 
 /**
  * Get array of URLs for service alerts
@@ -119,7 +116,7 @@ export const filterTripEntitiesByRouteIds = <T>(
 ): T[] =>
   <T[]>(
     entities.filter((entity: T & { trip: TripDescriptorEntity }) =>
-      routeIds.some((routeId: string) => routeId === entity.trip.routeId),
+      routeIds.some((routeId: string) => routeId === entity.trip?.routeId),
     )
   );
 

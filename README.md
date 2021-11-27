@@ -62,18 +62,21 @@ REDIS_AUTH=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ### Additional environment configuration:
 
-You will need to configure the GTFS-Realtime endpoint URLs, as well as specify the name of the access key in your `.env` config which corresponds to the value provided by the transit authority to authenticate these requests:
+You will need to configure the GTFS-Realtime endpoint URLs, as well as specify the name of the access key in your `.env` config (see `accessKey` below) which corresponds to the value provided by the transit authority to authenticate these requests. This key gets requested from the NestJS ConfigService. Below is an example config containing entries for MTA Subway and Bus.
 
 **NOTE**: Possible endpoint types are `tripUpdate`, `vehicle`, or `alert`. Setting any of these to `true` will return that endpoint for the related feed. An endpoint can contain one, two, or all three of these types, and the returned entities will be filtered by this type.
 
 **NOTE**: If an array of `routeIds` are provided, and `routes` is defined in this config, then endpoints will be filtered by the specified matching route, otherwise, all endpoints will be returned for that endpoint type.
 
+**NOTE**: Endpoint URLs are fetched using `x-api-key` header only (with the `.env` value specified by `accessKey` below).
+
 ```javascript
 const gtfsRealtime = [
+  // MTA SUBWAY
   {
-    {
     feedIndex: 1,
     agencyId: 'MTA NYCT',
+    accessKey: 'MTA_SUBWAY_API_KEY',
     endpoints: [
       {
         tripUpdate: true,
@@ -92,16 +95,34 @@ const gtfsRealtime = [
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts',
       },
     ],
-    // Name of access key to load from .env
-    accessKey: 'GTFS_REALTIME_ACCESS_KEY',
+  },
+  // MTA BUSES
+  {
+    feedIndex: 2,
+    accessKey: 'MTA_BUS_API_KEY',
+    endpoints: [
+      {
+        tripUpdate: true,
+        url: 'http://gtfsrt.prod.obanyc.com/tripUpdates',
+      },
+      {
+        vehicle: true,
+        url: 'http://gtfsrt.prod.obanyc.com/vehiclePositions',
+      },
+      {
+        alert: true,
+        url: 'http://gtfsrt.prod.obanyc.com/alerts',
+      },
+    ],
   },
 ];
 ```
 
-Using the above configuration as an example, you would need the following variable defined in a `.env` file:
+Using the above configuration as an example, you would need the following variables defined in a `.env` file:
 
 ```bash
-GTFS_REALTIME_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MTA_SUBWAY_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MTA_BUS_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 **NOTE**: Each feed will have it's own `accessKey`. Having this associated with the GTFS feed configuration allows us to serve multiple feeds from this API, such as subway, metro rail, bus, and ferry.
