@@ -2,8 +2,7 @@ import { registerAs } from '@nestjs/config';
 
 export default registerAs('gtfs-realtime', () => [
   {
-    feedIndex: 1,
-    agencyId: 'MTA NYCT',
+    feedIndexes: [1],
     accessKey: 'MTA_SUBWAY_API_KEY',
     endpoints: [
       {
@@ -61,7 +60,7 @@ export default registerAs('gtfs-realtime', () => [
     ],
   },
   {
-    feedIndex: 2,
+    feedIndexes: [8, 12],
     accessKey: 'MTA_BUS_API_KEY',
     endpoints: [
       {

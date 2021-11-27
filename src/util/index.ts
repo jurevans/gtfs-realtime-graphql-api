@@ -22,7 +22,7 @@ export const getGTFSConfigByFeedIndex: any = (
 ) => {
   return configService
     .get('gtfs-realtime')
-    .find((config: any) => config.feedIndex === feedIndex);
+    .find((config: any) => config.feedIndexes.indexOf(feedIndex) > -1);
 };
 
 /**
