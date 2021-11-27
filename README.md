@@ -64,27 +64,28 @@ REDIS_AUTH=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 You will need to configure the GTFS-Realtime endpoint URLs, as well as specify the name of the access key in your `.env` config which corresponds to the value provided by the transit authority to authenticate these requests:
 
-**NOTE**: `routes: []` is an array, or a boolean, and is only used to determine whether we should only request only a particular URL to boost performance. If this parameter is set to true, the API will query this for `TripUpdate` requests.
+**NOTE**: Possible endpoint types are `tripUpdate`, `vehicle`, or `alert`. Setting any of these to `true` will return that endpoint for the related feed. An endpoint can contain one, two, or all three of these types, and the returned entities will be filtered by this type.
 
-**NOTE**: `alert: true` will identify an endpoint as an `Alert` for fetching service-alert data. If an endpoint returns `Alert` and `TripUpdate` data, we can set `alert: true` as well as `routes: true`, and the appropriate entity types will be filtered from the response.
+**NOTE**: If an array of `routeIds` are provided, and `routes` is defined in this config, then endpoints will be filtered by the specified matching route, otherwise, all endpoints will be returned for that endpoint type.
 
 ```javascript
 const gtfsRealtime = [
   {
+    {
     feedIndex: 1,
     agencyId: 'MTA NYCT',
-    feedUrls: [
+    endpoints: [
       {
-        routes: ['1', '2', '3', '4', '5', '6', '7'],
+        tripUpdate: true,
+        vehicle: true,
+        routes: ['1', '2', '3', '4', '5', '6', '7', 'GS'],
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs',
       },
       {
+        tripUpdate: true,
+        vehicle: true,
         routes: ['A', 'C', 'E'],
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace',
-      },
-      {
-        routes: ['B', 'D', 'F', 'M'],
-        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm',
       },
       {
         alert: true,

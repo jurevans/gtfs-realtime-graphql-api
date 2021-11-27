@@ -51,15 +51,15 @@ type VehicleDescriptorEntity {
 
 type StopTimeEventEntity {
   delay: Int!
-  time: Int!
+  time: Int
   uncertainty: Int!
 }
 
 type StopTimeUpdateEntity {
   stopSequence: Int!
   stopId: String!
-  arrival: StopTimeEventEntity!
-  departure: StopTimeEventEntity!
+  arrival: StopTimeEventEntity
+  departure: StopTimeEventEntity
   scheduleRelationship: Int!
 }
 

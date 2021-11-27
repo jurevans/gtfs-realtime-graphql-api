@@ -5,7 +5,7 @@ export class StopTimeEventEntity {
   @Field(() => Int)
   delay: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   time: number;
 
   @Field(() => Int)

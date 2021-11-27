@@ -4,7 +4,7 @@ export default registerAs('gtfs-realtime', () => [
   {
     feedIndex: 1,
     agencyId: 'MTA NYCT',
-    feedUrls: [
+    endpoints: [
       {
         tripUpdate: true,
         vehicle: true,

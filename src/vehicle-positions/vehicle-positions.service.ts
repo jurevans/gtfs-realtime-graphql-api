@@ -37,16 +37,16 @@ export class VehiclePositionsService {
       );
     }
 
-    const { feedUrls } = config;
-    const endpoints: IEndpoint[] = [];
+    const { endpoints } = config;
+    const useEndpoints: IEndpoint[] = [];
 
     if (routeIds.length > 0) {
-      endpoints.push(...getEndpointsByRouteIds(feedUrls, routeIds));
+      useEndpoints.push(...getEndpointsByRouteIds(endpoints, routeIds));
     } else {
-      endpoints.push(...feedUrls);
+      useEndpoints.push(...endpoints);
     }
 
-    const urls = getUrlsByType(endpoints, EntityTypes.VEHICLE_POSITION);
+    const urls = getUrlsByType(useEndpoints, EntityTypes.VEHICLE_POSITION);
     const entities = await this.feedService.getFeedMessages<
       VehiclePositionEntity,
       VehiclePosition

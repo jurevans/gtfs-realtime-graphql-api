@@ -37,16 +37,16 @@ export class TripUpdatesService {
       );
     }
 
-    const { feedUrls } = config;
-    const endpoints: IEndpoint[] = [];
+    const { endpoints } = config;
+    const useEndpoints: IEndpoint[] = [];
 
     if (routeIds.length > 0) {
-      endpoints.push(...getEndpointsByRouteIds(feedUrls, routeIds));
+      useEndpoints.push(...getEndpointsByRouteIds(endpoints, routeIds));
     } else {
-      endpoints.push(...feedUrls);
+      useEndpoints.push(...endpoints);
     }
 
-    const urls = getUrlsByType(endpoints, EntityTypes.TRIP_UPDATE);
+    const urls = getUrlsByType(useEndpoints, EntityTypes.TRIP_UPDATE);
 
     const entities = await this.feedService.getFeedMessages<
       TripUpdateEntity,

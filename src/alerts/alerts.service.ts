@@ -35,8 +35,8 @@ export class AlertsService {
       );
     }
 
-    const { feedUrls } = config;
-    const urls = getUrlsByType(feedUrls, EntityTypes.ALERT);
+    const { endpoints } = config;
+    const urls = getUrlsByType(endpoints, EntityTypes.ALERT);
 
     const entities = await this.feedService.getFeedMessages<AlertEntity, Alert>(
       {
