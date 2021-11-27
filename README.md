@@ -135,7 +135,7 @@ config to utilize. A client application will likely use both the static and real
 
 ### Trip Updates
 
-Fetch `TripUpdate` data for routes `A` and `1`, for Feed with `feedIndex` = `1`:
+Fetch `TripUpdate` data for routes `A`, `1` and `G`, for Feed with `feedIndex` = `1`, along with `stopTimeUpdate` data, which can be used by the client to determine upcoming trains (in this case) for a given stop (identified by `stopId`):
 
 ```graphql
 {
@@ -143,11 +143,20 @@ Fetch `TripUpdate` data for routes `A` and `1`, for Feed with `feedIndex` = `1`:
     trip {
       tripId
       routeId
-      startTime
       startDate
     }
-    vehicle {
-      licensePlate
+    stopTimeUpdate {
+      stopId
+      arrival {
+        time
+        delay
+        uncertainty
+      }
+      departure {
+        time
+        delay
+        uncertainty
+      }
     }
   }
 }

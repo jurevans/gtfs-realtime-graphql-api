@@ -59,6 +59,24 @@ export default registerAs('gtfs-realtime', () => [
       },
     ],
     // Name of access key to load from .env
-    accessKey: 'GTFS_REALTIME_ACCESS_KEY',
+    accessKey: 'MTA_SUBWAY_API_KEY',
+  },
+  {
+    feedIndex: 2,
+    endpoints: [
+      {
+        tripUpdate: true,
+        url: 'http://gtfsrt.prod.obanyc.com/tripUpdates',
+      },
+      {
+        vehicle: true,
+        url: 'http://gtfsrt.prod.obanyc.com/vehiclePositions',
+      },
+      {
+        alert: true,
+        url: 'http://gtfsrt.prod.obanyc.com/alerts',
+      },
+    ],
+    accessKey: 'MTA_BUS_API_KEY',
   },
 ]);
