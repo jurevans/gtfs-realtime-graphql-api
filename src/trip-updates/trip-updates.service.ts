@@ -13,6 +13,7 @@ import { EntityTypes } from 'constants/';
 import { FilterTripUpdatesArgs } from 'trip-updates/filter-trip-updates.args';
 import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
+import { IConfig } from 'interfaces/config.interface';
 
 @Injectable()
 export class TripUpdatesService {
@@ -28,7 +29,10 @@ export class TripUpdatesService {
     const { feedIndex } = args;
     const { routeIds } = filter;
 
-    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
+    const config: IConfig = getGTFSConfigByFeedIndex(
+      this.configService,
+      feedIndex,
+    );
 
     if (!config) {
       throw new HttpException(

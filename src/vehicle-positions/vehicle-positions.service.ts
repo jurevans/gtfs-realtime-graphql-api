@@ -13,6 +13,7 @@ import { EntityTypes } from 'constants/';
 import { GetVehiclePositionsArgs } from './vehicle-positions.args';
 import { FilterVehiclePositionsArgs } from 'vehicle-positions/filter-vehicle-positions.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
+import { IConfig } from 'interfaces/config.interface';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -28,7 +29,10 @@ export class VehiclePositionsService {
     const { feedIndex } = args;
     const { routeIds = [] } = filter;
 
-    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
+    const config: IConfig = getGTFSConfigByFeedIndex(
+      this.configService,
+      feedIndex,
+    );
 
     if (!config) {
       throw new HttpException(

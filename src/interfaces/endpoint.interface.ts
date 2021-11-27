@@ -1,5 +1,7 @@
 export interface IEndpoint {
+  url: string;
   routes?: string[];
   alert?: boolean;
-  url: string;
+  tripUpdate?: boolean;
+  vehicle?: boolean;
 }

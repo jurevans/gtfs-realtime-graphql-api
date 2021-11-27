@@ -64,7 +64,7 @@ REDIS_AUTH=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 You will need to configure the GTFS-Realtime endpoint URLs, as well as specify the name of the access key in your `.env` config (see `accessKey` below) which corresponds to the value provided by the transit authority to authenticate these requests. This key gets requested from the NestJS ConfigService. Below is an example config containing entries for MTA Subway and Bus.
 
-**NOTE**: `feedIndexes` is an array of `feedIndex` values that correspond with a relational database (PostgreSQL/PostGIS) loaded with GTFS static data. A configuration with its associated endpoints can be valid for multiple feeds, such as the case with MTA Buses, which have static feeds split up by borough (e.g., `bronx`, `brooklyn`, `manhattan`, `queens`, and `staten_island`).
+**NOTE**: `feeds` is an array of `feedIndex` values that correspond with a relational database (PostgreSQL/PostGIS) loaded with GTFS static data. A configuration with its associated endpoints can be valid for multiple feeds, such as the case with MTA Buses, which have static feeds split up by borough (e.g., `bronx`, `brooklyn`, `manhattan`, `queens`, and `staten_island`, as well as the `Qxx` buses).
 
 **NOTE**: Possible endpoint types are `tripUpdate`, `vehicle`, or `alert`. Setting any of these to `true` will return that endpoint for the related feed. An endpoint can contain any combination of these types, and the returned entities will be filtered by a type.
 
@@ -76,7 +76,7 @@ You will need to configure the GTFS-Realtime endpoint URLs, as well as specify t
 const gtfsRealtime = [
   // MTA SUBWAY
   {
-    feedIndexes: [1],
+    feeds: [1],
     accessKey: 'MTA_SUBWAY_API_KEY',
     endpoints: [
       {
@@ -99,7 +99,7 @@ const gtfsRealtime = [
   },
   // MTA BUSES
   {
-    feedIndexes: [8, 12],
+    feeds: [8, 12],
     accessKey: 'MTA_BUS_API_KEY',
     endpoints: [
       {

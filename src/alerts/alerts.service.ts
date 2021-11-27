@@ -11,6 +11,7 @@ import {
 import { EntityTypes } from 'constants/';
 import { GetAlertsArgs } from 'alerts/alerts.args';
 import { FilterAlertsArgs } from 'alerts/filter-alerts.args';
+import { IConfig } from 'interfaces/config.interface';
 
 @Injectable()
 export class AlertsService {
@@ -26,7 +27,10 @@ export class AlertsService {
     const { feedIndex } = args;
     const { routeIds } = filter;
 
-    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
+    const config: IConfig = getGTFSConfigByFeedIndex(
+      this.configService,
+      feedIndex,
+    );
 
     if (!config) {
       throw new HttpException(

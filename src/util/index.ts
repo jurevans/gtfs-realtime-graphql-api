@@ -1,6 +1,5 @@
 import { ConfigService } from '@nestjs/config';
 import { TripDescriptorEntity } from 'entities/trip-descriptor.entity';
-import { IEndpoint } from 'interfaces/endpoint.interface';
 import {
   EntitySelector,
   FeedEntity,
@@ -9,6 +8,8 @@ import {
 } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
 import { EntityTypes } from 'constants/';
+import { IEndpoint } from 'interfaces/endpoint.interface';
+import { IConfig } from 'interfaces/config.interface';
 
 /**
  * Get GTFS config from ConfigService
@@ -16,13 +17,13 @@ import { EntityTypes } from 'constants/';
  * @param feedIndex
  * @returns {config}
  */
-export const getGTFSConfigByFeedIndex: any = (
+export const getGTFSConfigByFeedIndex = (
   configService: ConfigService,
   feedIndex: number,
-) => {
+): IConfig => {
   return configService
     .get('gtfs-realtime')
-    .find((config: any) => config.feedIndexes.indexOf(feedIndex) > -1);
+    .find((config: IConfig) => config.feeds?.indexOf(feedIndex) > -1);
 };
 
 /**

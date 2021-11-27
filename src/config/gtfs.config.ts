@@ -1,8 +1,9 @@
 import { registerAs } from '@nestjs/config';
+import { IConfig } from 'interfaces/config.interface';
 
-export default registerAs('gtfs-realtime', () => [
+export default registerAs('gtfs-realtime', (): IConfig[] => [
   {
-    feedIndexes: [1],
+    feeds: [1],
     accessKey: 'MTA_SUBWAY_API_KEY',
     endpoints: [
       {
@@ -60,7 +61,7 @@ export default registerAs('gtfs-realtime', () => [
     ],
   },
   {
-    feedIndexes: [8, 12],
+    feeds: [8, 12],
     accessKey: 'MTA_BUS_API_KEY',
     endpoints: [
       {
