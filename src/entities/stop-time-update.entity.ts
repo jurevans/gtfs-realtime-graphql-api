@@ -9,10 +9,10 @@ export class StopTimeUpdateEntity {
   @Field()
   stopId: string;
 
-  @Field(() => StopTimeEventEntity)
+  @Field(() => StopTimeEventEntity, { nullable: true })
   arrival: StopTimeEventEntity;
 
-  @Field(() => StopTimeEventEntity)
+  @Field(() => StopTimeEventEntity, { nullable: true })
   departure: StopTimeEventEntity;
 
   @Field(() => Int)

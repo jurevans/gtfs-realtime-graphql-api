@@ -8,8 +8,8 @@ import { FilterAlertsArgs } from 'alerts/filter-alerts.args';
 export class AlertsResolver {
   constructor(private alertsService: AlertsService) {}
 
-  @Query(() => [AlertEntity])
-  alerts(
+  @Query(() => [AlertEntity], { name: 'alerts' })
+  getAlerts(
     @Args() getAlertsArgs: GetAlertsArgs,
     @Args() filter: FilterAlertsArgs,
   ): Promise<AlertEntity[]> {

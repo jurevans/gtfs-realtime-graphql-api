@@ -12,7 +12,7 @@ import { FeedService } from 'feed/feed.service';
       useFactory: (configService: ConfigService): CacheModuleOptions => ({
         store: redisStore,
         ...configService.get('redis'),
-        ttl: CacheTtlSeconds.THIRTY_SECONDS,
+        ttl: CacheTtlSeconds.FIVE_SECONDS,
       }),
       inject: [ConfigService],
     }),

@@ -1,6 +1,7 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
+import { IConfig } from 'interfaces/config.interface';
 import fetch from 'node-fetch';
 import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 import { getGTFSConfigByFeedIndex, getFeedEntitiesByType } from 'util/';
@@ -48,7 +49,10 @@ export class FeedService {
       return feedMessageInCache;
     }
 
-    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
+    const config: IConfig = getGTFSConfigByFeedIndex(
+      this.configService,
+      feedIndex,
+    );
     const { accessKey } = config;
     const accessKeyValue = this.configService.get(accessKey);
     const options = {
@@ -61,10 +65,8 @@ export class FeedService {
     const response = await fetch(url, options);
     const buffer = await response.buffer();
     const feedMessage = FeedMessage.decode(buffer);
+    this.cacheManager.set(url, feedMessage);
 
-    const feedMessageJSON = FeedMessage.toJSON(feedMessage);
-    this.cacheManager.set(url, feedMessageJSON);
-
-    return await this.cacheManager.get(url);
+    return feedMessage;
   }
 }

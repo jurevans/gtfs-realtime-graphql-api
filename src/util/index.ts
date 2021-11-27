@@ -1,6 +1,5 @@
 import { ConfigService } from '@nestjs/config';
 import { TripDescriptorEntity } from 'entities/trip-descriptor.entity';
-import { IEndpoint } from 'interfaces/endpoint.interface';
 import {
   EntitySelector,
   FeedEntity,
@@ -8,6 +7,9 @@ import {
   TranslatedString,
 } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
+import { EntityTypes } from 'constants/';
+import { IEndpoint } from 'interfaces/endpoint.interface';
+import { IConfig } from 'interfaces/config.interface';
 
 /**
  * Get GTFS config from ConfigService
@@ -15,13 +17,13 @@ import { AlertEntity } from 'entities/alert.entity';
  * @param feedIndex
  * @returns {config}
  */
-export const getGTFSConfigByFeedIndex: any = (
+export const getGTFSConfigByFeedIndex = (
   configService: ConfigService,
   feedIndex: number,
-) => {
+): IConfig => {
   return configService
     .get('gtfs-realtime')
-    .find((config: any) => config.feedIndex === feedIndex);
+    .find((config: IConfig) => config.feeds?.indexOf(feedIndex) > -1);
 };
 
 /**
@@ -66,12 +68,12 @@ export const getFeedEntitiesByType = (
  * @param routeIds
  * @returns {string[]}
  */
-export const getUrlsByRouteIds = (
-  feedUrls: IEndpoint[],
+export const getEndpointsByRouteIds = (
+  endpoints: IEndpoint[],
   routeIds: string[],
-): string[] => {
-  const endpoints = routeIds
-    ? feedUrls.filter((endpoint: IEndpoint) => {
+): IEndpoint[] =>
+  routeIds
+    ? endpoints.filter((endpoint: IEndpoint) => {
         if (routeIds.length > 0 && endpoint.hasOwnProperty('routes')) {
           if (endpoint.routes.some) {
             return endpoint.routes.some(
@@ -80,21 +82,26 @@ export const getUrlsByRouteIds = (
           }
           return false;
         }
-        return !!endpoint.routes;
+        return true;
       })
-    : feedUrls;
-
-  return endpoints.map((endpoint: IEndpoint) => endpoint.url);
-};
+    : endpoints;
 
 /**
  * Get array of URLs for service alerts
  * @param feedUrls
  * @returns {string[]}
  */
-export const getAlertUrls = (feedUrls: IEndpoint[]): string[] =>
+type EndpointTypes =
+  | EntityTypes.ALERT
+  | EntityTypes.TRIP_UPDATE
+  | EntityTypes.VEHICLE_POSITION;
+
+export const getUrlsByType = (
+  feedUrls: IEndpoint[],
+  type: EndpointTypes,
+): string[] =>
   feedUrls
-    .filter((endpoint: IEndpoint) => endpoint.alert === true)
+    .filter((endpoint: IEndpoint) => endpoint[type] === true)
     .map((endpoint: IEndpoint) => endpoint.url);
 
 /**
@@ -110,7 +117,7 @@ export const filterTripEntitiesByRouteIds = <T>(
 ): T[] =>
   <T[]>(
     entities.filter((entity: T & { trip: TripDescriptorEntity }) =>
-      routeIds.some((routeId: string) => routeId === entity.trip.routeId),
+      routeIds.some((routeId: string) => routeId === entity.trip?.routeId),
     )
   );
 

@@ -51,15 +51,15 @@ type VehicleDescriptorEntity {
 
 type StopTimeEventEntity {
   delay: Int!
-  time: Int!
+  time: Int
   uncertainty: Int!
 }
 
 type StopTimeUpdateEntity {
   stopSequence: Int!
   stopId: String!
-  arrival: StopTimeEventEntity!
-  departure: StopTimeEventEntity!
+  arrival: StopTimeEventEntity
+  departure: StopTimeEventEntity
   scheduleRelationship: Int!
 }
 
@@ -72,15 +72,15 @@ type TripUpdateEntity {
 }
 
 type PositionEntity {
-  latitude: Int
-  longitude: Int
+  latitude: Float
+  longitude: Float
   bearing: Int
   odometer: Int
   speed: Int
 }
 
 type VehiclePositionEntity {
-  trip: TripDescriptorEntity!
+  trip: TripDescriptorEntity
   vehicle: VehicleDescriptorEntity!
   position: PositionEntity
   currentStopSequence: Int!

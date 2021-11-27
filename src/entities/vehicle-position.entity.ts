@@ -6,7 +6,7 @@ import { PositionEntity } from './position.entity';
 
 @ObjectType()
 export class VehiclePositionEntity {
-  @Field(() => TripDescriptorEntity)
+  @Field(() => TripDescriptorEntity, { nullable: true })
   trip: TripDescriptorEntity;
 
   @Field(() => VehicleDescriptorEntity)

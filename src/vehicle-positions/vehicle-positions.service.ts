@@ -6,11 +6,14 @@ import { FeedService } from 'feed/feed.service';
 import {
   filterTripEntitiesByRouteIds,
   getGTFSConfigByFeedIndex,
-  getUrlsByRouteIds,
+  getEndpointsByRouteIds,
+  getUrlsByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
 import { GetVehiclePositionsArgs } from './vehicle-positions.args';
 import { FilterVehiclePositionsArgs } from 'vehicle-positions/filter-vehicle-positions.args';
+import { IEndpoint } from 'interfaces/endpoint.interface';
+import { IConfig } from 'interfaces/config.interface';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -24,9 +27,12 @@ export class VehiclePositionsService {
     filter: FilterVehiclePositionsArgs,
   ) {
     const { feedIndex } = args;
-    const { routeIds } = filter;
+    const { routeIds = [] } = filter;
 
-    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
+    const config: IConfig = getGTFSConfigByFeedIndex(
+      this.configService,
+      feedIndex,
+    );
 
     if (!config) {
       throw new HttpException(
@@ -35,9 +41,16 @@ export class VehiclePositionsService {
       );
     }
 
-    const { feedUrls } = config;
-    const urls = getUrlsByRouteIds(feedUrls, routeIds);
+    const { endpoints } = config;
+    const useEndpoints: IEndpoint[] = [];
 
+    if (routeIds.length > 0) {
+      useEndpoints.push(...getEndpointsByRouteIds(endpoints, routeIds));
+    } else {
+      useEndpoints.push(...endpoints);
+    }
+
+    const urls = getUrlsByType(useEndpoints, EntityTypes.VEHICLE_POSITION);
     const entities = await this.feedService.getFeedMessages<
       VehiclePositionEntity,
       VehiclePosition

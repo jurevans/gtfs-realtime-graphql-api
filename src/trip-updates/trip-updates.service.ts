@@ -5,12 +5,15 @@ import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { FeedService } from 'feed/feed.service';
 import {
   filterTripEntitiesByRouteIds,
+  getEndpointsByRouteIds,
   getGTFSConfigByFeedIndex,
-  getUrlsByRouteIds,
+  getUrlsByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
 import { FilterTripUpdatesArgs } from 'trip-updates/filter-trip-updates.args';
 import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
+import { IEndpoint } from 'interfaces/endpoint.interface';
+import { IConfig } from 'interfaces/config.interface';
 
 @Injectable()
 export class TripUpdatesService {
@@ -26,7 +29,10 @@ export class TripUpdatesService {
     const { feedIndex } = args;
     const { routeIds } = filter;
 
-    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
+    const config: IConfig = getGTFSConfigByFeedIndex(
+      this.configService,
+      feedIndex,
+    );
 
     if (!config) {
       throw new HttpException(
@@ -35,8 +41,16 @@ export class TripUpdatesService {
       );
     }
 
-    const { feedUrls } = config;
-    const urls = getUrlsByRouteIds(feedUrls, routeIds);
+    const { endpoints } = config;
+    const useEndpoints: IEndpoint[] = [];
+
+    if (routeIds.length > 0) {
+      useEndpoints.push(...getEndpointsByRouteIds(endpoints, routeIds));
+    } else {
+      useEndpoints.push(...endpoints);
+    }
+
+    const urls = getUrlsByType(useEndpoints, EntityTypes.TRIP_UPDATE);
 
     const entities = await this.feedService.getFeedMessages<
       TripUpdateEntity,
