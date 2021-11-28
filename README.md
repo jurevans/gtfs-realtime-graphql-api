@@ -55,13 +55,13 @@ You can now interact with the data at `http://localhost:5000/graphql/`.
 
 ### Authentication
 
-You need to defined an `API_KEYS` value in the `.env` configuration. This allows you to authenticate GraphQL requests using the `x-api-key` header. You can have any number of keys specified here, separated by a comma:
+You need to define an `API_KEYS` value in the `.env` configuration. This allows you to authenticate GraphQL requests using the `x-api-key` header. You can have any number of keys specified here, separated by a comma:
 
 ```bash
 API_KEYS=1XXXXXXXXXXXXXX,2XXXXXXXXXXXXXX,3XXXXXXXXXXXXXX
 ```
 
-I am using the [Insomnia](https://insomnia.rest/) client, however, if you want to use the GraphQL Playground interface in your browser, you can send this header with [ModHeader](https://modheader.com/) extension.
+I am using the [Insomnia](https://insomnia.rest/) client, however, if you want to use the GraphQL Playground interface in your browser, you can send this header with [ModHeader](https://modheader.com/) extension. If you use ModHeader, you can add an `x-api-key` request header, then add a Filter with a URL Pattern of `http:\/\/localhost:5000\/graphql` to authenticate.
 
 ### Connect to Redis
 

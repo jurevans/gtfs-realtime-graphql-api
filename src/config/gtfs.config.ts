@@ -63,10 +63,9 @@ export default registerAs('gtfs-realtime', (): IConfig[] => [
    * 4 = Manhattan
    * 5 = Queens
    * 6 = Staten Island
-   * 7 = Bus Company (Q)
    */
   {
-    feeds: [2, 3, 4, 5, 6, 7],
+    feeds: [2, 3, 4, 5, 6],
     accessKey: 'MTA_BUS_API_KEY',
     endpoints: [
       {
