@@ -61,6 +61,8 @@ You need to defined an `API_KEYS` value in the `.env` configuration. This allows
 API_KEYS=1XXXXXXXXXXXXXX,2XXXXXXXXXXXXXX,3XXXXXXXXXXXXXX
 ```
 
+I am using the [Insomnia](https://insomnia.rest/) client, however, if you want to use the GraphQL Playground interface in your browser, you can send this header with [ModHeader](https://modheader.com/) extension.
+
 ### Connect to Redis
 
 This application uses Redis for caching, which can be configured in `.env`:
