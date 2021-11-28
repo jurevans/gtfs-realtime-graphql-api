@@ -11,6 +11,9 @@ If you would like some inspiration for building a client that consumes real-time
 - [Running the API](#running-the-api)
 - [Testing the API](#testing-the-api)
 - [Configuring your environment](#configuring-your-environment)
+  - [Authentication](#authentication)
+  - [Connecting to Redis](#connecting-to-redis)
+  - [GTFS Real-time API Access](#gtfs-realtime-configuration)
 - [Compiling .proto files](#compiling)
 - [Querying the API](#querying-the-api)
   - [Trip Updates](#trip-updates)
@@ -50,6 +53,14 @@ You can now interact with the data at `http://localhost:5000/graphql/`.
 
 ## Configuring your environment
 
+### Authentication
+
+You need to defined an `API_KEYS` value in the `.env` configuration. This allows you to authenticate GraphQL requests using the `x-api-key` header. You can have any number of keys specified here, separated by a comma:
+
+```bash
+API_KEYS=1XXXXXXXXXXXXXX,2XXXXXXXXXXXXXX,3XXXXXXXXXXXXXX
+```
+
 ### Connect to Redis
 
 This application uses Redis for caching, which can be configured in `.env`:
@@ -62,7 +73,7 @@ REDIS_AUTH=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 [ [Table of Contents](#table-of-contents) ]
 
-### Additional environment configuration:
+### GTFS Realtime Configuration
 
 You will need to configure the GTFS-Realtime endpoint URLs, as well as specify the name of the access key in your `.env` config (see `accessKey` below) which corresponds to the value provided by the transit authority to authenticate these requests. This key gets requested from the NestJS ConfigService. Below is an example config containing entries for MTA Subway and Bus.
 

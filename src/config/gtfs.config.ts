@@ -3,6 +3,9 @@ import { EntityTypes } from 'constants/';
 import { IConfig } from 'interfaces/config.interface';
 
 export default registerAs('gtfs-realtime', (): IConfig[] => [
+  /**
+   * MTA Subway
+   */
   {
     feeds: [1],
     accessKey: 'MTA_SUBWAY_API_KEY',
@@ -53,22 +56,17 @@ export default registerAs('gtfs-realtime', (): IConfig[] => [
       },
     ],
   },
+  /**
+   * MTA Bus
+   * 2 = Bronx
+   * 3 = Brooklyn
+   * 4 = Manhattan
+   * 5 = Queens
+   * 6 = Staten Island
+   * 7 = Bus Company (Q)
+   */
   {
-    feeds: [2],
-    accessKey: 'MTA_SUBWAY_API_KEY',
-    endpoints: [
-      {
-        types: [
-          EntityTypes.TRIP_UPDATE,
-          EntityTypes.VEHICLE_POSITION,
-          EntityTypes.ALERT,
-        ],
-        url: ' https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/lirr%2Fgtfs-lirr',
-      },
-    ],
-  },
-  {
-    feeds: [8, 12],
+    feeds: [2, 3, 4, 5, 6, 7],
     accessKey: 'MTA_BUS_API_KEY',
     endpoints: [
       {
@@ -82,6 +80,23 @@ export default registerAs('gtfs-realtime', (): IConfig[] => [
       {
         types: [EntityTypes.ALERT],
         url: 'http://gtfsrt.prod.obanyc.com/alerts',
+      },
+    ],
+  },
+  /**
+   * Long Island Railroad (LIRR)
+   */
+  {
+    feeds: [8],
+    accessKey: 'MTA_SUBWAY_API_KEY',
+    endpoints: [
+      {
+        types: [
+          EntityTypes.TRIP_UPDATE,
+          EntityTypes.VEHICLE_POSITION,
+          EntityTypes.ALERT,
+        ],
+        url: ' https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/lirr%2Fgtfs-lirr',
       },
     ],
   },

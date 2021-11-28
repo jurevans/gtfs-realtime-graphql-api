@@ -1,8 +1,16 @@
-import { CacheModule, CacheModuleOptions, Module } from '@nestjs/common';
+import {
+  CacheModule,
+  CacheModuleOptions,
+  MiddlewareConsumer,
+  Module,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
+import { AuthModule } from 'auth/auth.module';
+import { AuthMiddleware } from 'middleware/auth.middleware';
 import * as redisStore from 'cache-manager-redis-store';
 import { join } from 'path';
+import authConfig from 'config/auth.config';
 import redisConfig from 'config/redis.config';
 import gtfsConfig from 'config/gtfs.config';
 import { CacheTtlSeconds } from 'constants/';
@@ -15,7 +23,7 @@ import { VehiclePositionsModule } from './vehicle-positions/vehicle-positions.mo
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
-      load: [redisConfig, gtfsConfig],
+      load: [authConfig, redisConfig, gtfsConfig],
     }),
     CacheModule.registerAsync({
       useFactory: (configService: ConfigService): CacheModuleOptions => ({
@@ -33,6 +41,11 @@ import { VehiclePositionsModule } from './vehicle-positions/vehicle-positions.mo
     AlertsModule,
     TripUpdatesModule,
     VehiclePositionsModule,
+    AuthModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('graphql');
+  }
+}
