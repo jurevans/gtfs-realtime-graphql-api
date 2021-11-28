@@ -8,7 +8,7 @@ export default registerAs('gtfs-realtime', (): IConfig[] => [
    */
   {
     feeds: [1],
-    accessKey: 'MTA_SUBWAY_API_KEY',
+    accessKey: 'MTA_API_KEY',
     endpoints: [
       {
         types: [EntityTypes.TRIP_UPDATE, EntityTypes.VEHICLE_POSITION],
@@ -86,16 +86,33 @@ export default registerAs('gtfs-realtime', (): IConfig[] => [
    * Long Island Railroad (LIRR)
    */
   {
-    feeds: [8],
-    accessKey: 'MTA_SUBWAY_API_KEY',
+    feeds: [7],
+    accessKey: 'MTA_API_KEY',
     endpoints: [
       {
-        types: [
-          EntityTypes.TRIP_UPDATE,
-          EntityTypes.VEHICLE_POSITION,
-          EntityTypes.ALERT,
-        ],
+        types: [EntityTypes.TRIP_UPDATE, EntityTypes.VEHICLE_POSITION],
         url: ' https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/lirr%2Fgtfs-lirr',
+      },
+      {
+        types: [EntityTypes.ALERT],
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Flirr-alerts',
+      },
+    ],
+  },
+  /**
+   * Metro-North Railroad (MNR)
+   */
+  {
+    feeds: [8],
+    accessKey: 'MTA_API_KEY',
+    endpoints: [
+      {
+        types: [EntityTypes.TRIP_UPDATE, EntityTypes.VEHICLE_POSITION],
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr',
+      },
+      {
+        types: [EntityTypes.ALERT],
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fmnr-alerts',
       },
     ],
   },

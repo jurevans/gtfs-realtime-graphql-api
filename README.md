@@ -93,7 +93,7 @@ const gtfsRealtime = [
   // MTA SUBWAY
   {
     feeds: [1],
-    accessKey: 'MTA_SUBWAY_API_KEY',
+    accessKey: 'MTA_API_KEY',
     endpoints: [
       {
         types: [EntityTypes.TRIP_UPDATE, EntityTypes.VEHICLE_POSITION],
@@ -114,15 +114,15 @@ const gtfsRealtime = [
   // Long Island Railroad (LIRR)
   {
     feeds: [2],
-    accessKey: 'MTA_SUBWAY_API_KEY',
+    accessKey: 'MTA_API_KEY',
     endpoints: [
       {
-        types: [
-          EntityTypes.TRIP_UPDATE,
-          EntityTypes.VEHICLE_POSITION,
-          EntityTypes.ALERT,
-        ],
+        types: [EntityTypes.TRIP_UPDATE, EntityTypes.VEHICLE_POSITION],
         url: ' https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/lirr%2Fgtfs-lirr',
+      },
+      {
+        types: [EntityTypes.ALERT],
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Flirr-alerts',
       },
     ],
   },
@@ -151,7 +151,7 @@ const gtfsRealtime = [
 Using the above configuration as an example, you would need the following variables defined in a `.env` file:
 
 ```bash
-MTA_SUBWAY_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MTA_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 MTA_BUS_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
