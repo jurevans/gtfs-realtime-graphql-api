@@ -1,14 +1,19 @@
 # GTFS Real-Time GraphQL API
 
-This API serves GTFS-realtime data via GraphQL. Presently, this is set up for `Alert` and `TripUpdate` data, as defined in `gtfs-realtime.proto` (Read about the GTFS Realtime specification [here](https://developers.google.com/transit/gtfs-realtime))
+This API serves GTFS-realtime data via GraphQL for alerts, trip updates, and vehicle positions as defined in `gtfs-realtime.proto` (Read about the GTFS Realtime specification [here](https://developers.google.com/transit/gtfs-realtime)). This API is built on [NestJS](https://nestjs.com/). See the [documentation](https://docs.nestjs.com/) for more info.
 
-To serve the GTFS-static data via GraphQL see [gtfs-graphql-api](https://github.com/jurevans/gtfs-graphql-api).
+To serve the corresponding GTFS-static data via GraphQL, see [gtfs-graphql-api](https://github.com/jurevans/gtfs-graphql-api).
+
+If you would like some inspiration for building a client that consumes real-time feeds, I highly recommend the new [MTA live subway map](https://map.mta.info/).
 
 ## Table of Contents
 
 - [Running the API](#running-the-api)
 - [Testing the API](#testing-the-api)
 - [Configuring your environment](#configuring-your-environment)
+  - [Authentication](#authentication)
+  - [Connecting to Redis](#connecting-to-redis)
+  - [GTFS Real-time API Access](#gtfs-realtime-configuration)
 - [Compiling .proto files](#compiling)
 - [Querying the API](#querying-the-api)
   - [Trip Updates](#trip-updates)
@@ -48,6 +53,16 @@ You can now interact with the data at `http://localhost:5000/graphql/`.
 
 ## Configuring your environment
 
+### Authentication
+
+You need to define an `API_KEYS` value in the `.env` configuration. This allows you to authenticate GraphQL requests using the `x-api-key` header. You can have any number of keys specified here, separated by a comma:
+
+```bash
+API_KEYS=1XXXXXXXXXXXXXX,2XXXXXXXXXXXXXX,3XXXXXXXXXXXXXX
+```
+
+I am using the [Insomnia](https://insomnia.rest/) client, however, if you want to use the GraphQL Playground interface in your browser, you can send this header with [ModHeader](https://modheader.com/) extension. If you use ModHeader, you can add an `x-api-key` request header, then add a Filter with a URL Pattern of `http:\/\/localhost:5000\/graphql` to authenticate.
+
 ### Connect to Redis
 
 This application uses Redis for caching, which can be configured in `.env`:
@@ -60,40 +75,54 @@ REDIS_AUTH=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 [ [Table of Contents](#table-of-contents) ]
 
-### Additional environment configuration:
+### GTFS Realtime Configuration
 
 You will need to configure the GTFS-Realtime endpoint URLs, as well as specify the name of the access key in your `.env` config (see `accessKey` below) which corresponds to the value provided by the transit authority to authenticate these requests. This key gets requested from the NestJS ConfigService. Below is an example config containing entries for MTA Subway and Bus.
 
-**NOTE**: `feeds` is an array of `feedIndex` values that correspond with a relational database (PostgreSQL/PostGIS) loaded with GTFS static data. A configuration with its associated endpoints can be valid for multiple feeds, such as the case with MTA Buses, which have static feeds split up by borough (e.g., `bronx`, `brooklyn`, `manhattan`, `queens`, and `staten_island`, as well as the `Qxx` buses).
+**NOTES**
 
-**NOTE**: Possible endpoint types are `tripUpdate`, `vehicle`, or `alert`. Setting any of these to `true` will return that endpoint for the related feed. An endpoint can contain any combination of these types, and the returned entities will be filtered by a type.
-
-**NOTE**: If an array of `routeIds` are provided, and `routes` is defined in this config, then endpoints will be filtered by the specified matching route, otherwise, all endpoints will be returned for that endpoint type. This reduces the need to call all endpoints every time, and each URL can be cached and used individually.
-
-**NOTE**: Endpoint URLs are fetched using `x-api-key` header only (with the `.env` value specified by `accessKey` below).
+- **feeds** - `feeds` is an array of `feedIndex` values that correspond with a relational database (PostgreSQL/PostGIS) loaded with GTFS static data. This is how a client populated with static feed data would know where to fetch real-time updates. A configuration with its associated endpoints can be valid for multiple feeds, which is the case for MTA Buses, which have static feeds split up by borough (e.g., `bronx`, `brooklyn`, `manhattan`, `queens`, and `staten_island`, as well as the `Qxx` buses). It is absolutely acceptable to specify an arbitrary `feedIndex` that does not correspond to a GTFS static feed - the client only needs to know what is referenced in the config.
+- **accessKey** - Endpoint URLs are fetched using `x-api-key` header only (with the `.env` value specified by `accessKey` below).
+- **endpoints**
+  - **routeIds** - If an array of `routeIds` are provided, and `routes` is defined in this config, then endpoints will be filtered by the specified matching route, otherwise, all endpoints will be returned for that endpoint type. This reduces the need to call all endpoints every time, and each URL can be cached and used individually.
+  - **types** - Possible endpoint types are `tripUpdate`, `vehicle`, or `alert`. These values are enforced with the `EntityTypes` enum as seen below. This is another means by which we only request what is needed from the external APIs.
+  - **url** - Simply a string containing the URL serving real-time data. These URLs and responses are cached in Redis with various TTLs depending on how often the data might update (e.g., Alerts update every minute, Vehicle Positions might update much more frequently, etc.)
 
 ```javascript
 const gtfsRealtime = [
   // MTA SUBWAY
   {
     feeds: [1],
-    accessKey: 'MTA_SUBWAY_API_KEY',
+    accessKey: 'MTA_API_KEY',
     endpoints: [
       {
-        tripUpdate: true,
-        vehicle: true,
+        types: [EntityTypes.TRIP_UPDATE, EntityTypes.VEHICLE_POSITION],
         routes: ['1', '2', '3', '4', '5', '6', '7', 'GS'],
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs',
       },
       {
-        tripUpdate: true,
-        vehicle: true,
+        types: [EntityTypes.TRIP_UPDATE, EntityTypes.VEHICLE_POSITION],
         routes: ['A', 'C', 'E'],
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace',
       },
       {
-        alert: true,
+        types: [EntityTypes.ALERT],
         url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts',
+      },
+    ],
+  },
+  // Long Island Railroad (LIRR)
+  {
+    feeds: [2],
+    accessKey: 'MTA_API_KEY',
+    endpoints: [
+      {
+        types: [EntityTypes.TRIP_UPDATE, EntityTypes.VEHICLE_POSITION],
+        url: ' https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/lirr%2Fgtfs-lirr',
+      },
+      {
+        types: [EntityTypes.ALERT],
+        url: 'https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Flirr-alerts',
       },
     ],
   },
@@ -103,15 +132,15 @@ const gtfsRealtime = [
     accessKey: 'MTA_BUS_API_KEY',
     endpoints: [
       {
-        tripUpdate: true,
+        types: [EntityTypes.TRIP_UPDATE],
         url: 'http://gtfsrt.prod.obanyc.com/tripUpdates',
       },
       {
-        vehicle: true,
+        types: [EntityTypes.VEHICLE_POSITION],
         url: 'http://gtfsrt.prod.obanyc.com/vehiclePositions',
       },
       {
-        alert: true,
+        types: [EntityTypes.ALERT],
         url: 'http://gtfsrt.prod.obanyc.com/alerts',
       },
     ],
@@ -122,11 +151,15 @@ const gtfsRealtime = [
 Using the above configuration as an example, you would need the following variables defined in a `.env` file:
 
 ```bash
-MTA_SUBWAY_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MTA_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 MTA_BUS_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-**NOTE**: Each feed will have it's own `accessKey`. Having this associated with the GTFS feed configuration allows us to serve multiple feeds from this API, such as subway, metro rail, bus, and ferry.
+If you would like to use MTA real-time data, you can request access keys at the following URLs:
+
+- [MTA Bus Time](http://bustime.mta.info/wiki/Developers/Index)
+- [MTA Subway/LIRR/MNR](https://api.mta.info/#/landing)
+  - _**Note**: For subway real-time data feeds, I believe that you need to create a developer account here to gain an access key._
 
 [ [Table of Contents](#table-of-contents) ]
 
@@ -250,7 +283,9 @@ Upcoming improvements to the API:
 - `FeedEntity` data should respect `is_deleted` where relevant. See [the Realtime Transit specification]() on `is_deleted` (_this is low priority for now_):
 
 ```
-Whether this entity is to be deleted. Should be provided only for feeds with Incrementality of DIFFERENTIAL - this field should NOT be provided for feeds with Incrementality of FULL_DATASET.
+Whether this entity is to be deleted. Should be provided only
+for feeds with Incrementality of DIFFERENTIAL - this field
+should NOT be provided for feeds with Incrementality of FULL_DATASET.
 ```
 
 [ [Table of Contents](#table-of-contents) ]
