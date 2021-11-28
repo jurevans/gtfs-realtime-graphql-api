@@ -7,8 +7,7 @@ import {
   TranslatedString,
 } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
-import { EntityTypes } from 'constants/';
-import { IEndpoint } from 'interfaces/endpoint.interface';
+import { EndpointTypes, IEndpoint } from 'interfaces/endpoint.interface';
 import { IConfig } from 'interfaces/config.interface';
 
 /**
@@ -88,20 +87,19 @@ export const getEndpointsByRouteIds = (
 
 /**
  * Get array of URLs for service alerts
- * @param feedUrls
+ * @param endpoints
  * @returns {string[]}
  */
-type EndpointTypes =
-  | EntityTypes.ALERT
-  | EntityTypes.TRIP_UPDATE
-  | EntityTypes.VEHICLE_POSITION;
-
 export const getUrlsByType = (
-  feedUrls: IEndpoint[],
+  endpoints: IEndpoint[],
   type: EndpointTypes,
 ): string[] =>
-  feedUrls
-    .filter((endpoint: IEndpoint) => endpoint[type] === true)
+  endpoints
+    .filter((endpoint: IEndpoint) =>
+      endpoint.types.some(
+        (endpointType: EndpointTypes) => endpointType === type,
+      ),
+    )
     .map((endpoint: IEndpoint) => endpoint.url);
 
 /**
