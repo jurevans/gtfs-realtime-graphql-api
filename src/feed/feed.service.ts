@@ -1,10 +1,10 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
+import axios from 'axios';
 import { IConfig } from 'interfaces/config.interface';
-import fetch from 'node-fetch';
-import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
-import { getGTFSConfigByFeedIndex, getFeedEntitiesByType } from 'util/';
+import { FeedMessage } from 'proto/gtfs-realtime';
+import { getGTFSConfigByFeedIndex } from 'util/';
 
 @Injectable()
 export class FeedService {
@@ -14,29 +14,17 @@ export class FeedService {
     private readonly configService: ConfigService,
   ) {}
 
-  public async getFeedMessages<T1, T2>(props: {
+  public async getFeedMessages(props: {
     feedIndex: number;
     urls: string[];
-    entity: { new (partial?: T2): T1 };
-    type: string;
-  }): Promise<T1[]> {
-    const { feedIndex, urls, entity, type } = props;
+  }): Promise<FeedMessage[]> {
+    const { feedIndex, urls } = props;
 
-    const feeds: FeedMessage[] = await Promise.all(
+    return await Promise.all(
       urls.map(
         async (endpoint: string) =>
           <FeedMessage>await this._getFeedMessage(feedIndex, endpoint),
       ),
-    );
-
-    const entities = feeds.map((feed: FeedMessage) =>
-      getFeedEntitiesByType(feed, type),
-    );
-
-    return <T1[]>(
-      entities
-        .flat()
-        .map((feedEntity: FeedEntity) => new entity(feedEntity[type]))
     );
   }
 
@@ -53,17 +41,18 @@ export class FeedService {
       this.configService,
       feedIndex,
     );
-    const { accessKey } = config;
-    const accessKeyValue = this.configService.get(accessKey);
-    const options = {
+    const { accessKey }: { accessKey: string } = config;
+    const accessKeyValue: string = this.configService.get(accessKey);
+    const options: any = {
       method: 'GET',
+      responseType: 'arraybuffer',
       headers: {
         'x-api-key': accessKeyValue,
       },
     };
 
-    const response = await fetch(url, options);
-    const buffer = await response.buffer();
+    const response = await axios(url, options);
+    const buffer = await response.data;
     const feedMessage = FeedMessage.decode(buffer);
     this.cacheManager.set(url, feedMessage);
 

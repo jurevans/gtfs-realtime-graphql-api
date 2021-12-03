@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FeedService } from 'feed/feed.service';
-import { Alert } from 'proto/gtfs-realtime';
 import { AlertEntity } from 'entities/alert.entity';
 import {
   filterAlertsByRouteIds,
@@ -12,6 +11,8 @@ import { EntityTypes } from 'constants/';
 import { GetAlertsArgs } from 'alerts/alerts.args';
 import { FilterAlertsArgs } from 'alerts/filter-alerts.args';
 import { IConfig } from 'interfaces/config.interface';
+import { FeedMessages, IFeedStrategy } from 'feed/feed-messages.context';
+import { AlertsStrategy } from 'feed/strategies/alerts.strategy';
 
 @Injectable()
 export class AlertsService {
@@ -42,14 +43,14 @@ export class AlertsService {
     const { endpoints } = config;
     const urls = getUrlsByType(endpoints, EntityTypes.ALERT);
 
-    const entities = await this.feedService.getFeedMessages<AlertEntity, Alert>(
-      {
-        feedIndex,
-        urls,
-        entity: AlertEntity,
-        type: EntityTypes.ALERT,
-      },
-    );
+    const feedMessages = await this.feedService.getFeedMessages({
+      feedIndex,
+      urls,
+    });
+
+    const entities = new FeedMessages(
+      new AlertsStrategy() as IFeedStrategy,
+    ).getEntities<AlertEntity>(feedMessages);
 
     if (routeIds.length > 0) {
       return <AlertEntity[]>filterAlertsByRouteIds(entities, routeIds);

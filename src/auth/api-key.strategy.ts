@@ -12,7 +12,7 @@ export class ApiKeyStrategy extends PassportStrategy(HeaderAPIKeyStrategy) {
         prefix: '',
       },
       true,
-      (apikey, done) => {
+      (apikey: string, done: (isValid: boolean) => unknown) => {
         const checkKey = authService.validateApiKey(apikey);
         if (!checkKey) {
           return done(false);
