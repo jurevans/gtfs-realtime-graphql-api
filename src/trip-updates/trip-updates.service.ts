@@ -13,7 +13,7 @@ import { FilterTripUpdatesArgs } from 'trip-updates/filter-trip-updates.args';
 import { GetTripUpdatesArgs } from 'trip-updates/trip-updates.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
 import { IConfig } from 'interfaces/config.interface';
-import { FeedMessages, IFeedStrategy } from 'feed/feed-messages.context';
+import { FeedMessages } from 'feed/feed-messages.context';
 import { TripUpdatesStrategy } from 'feed/strategies/trip-updates.strategy';
 
 @Injectable()
