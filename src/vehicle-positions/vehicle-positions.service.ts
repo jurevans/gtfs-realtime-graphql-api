@@ -13,7 +13,7 @@ import { GetVehiclePositionsArgs } from './vehicle-positions.args';
 import { FilterVehiclePositionsArgs } from 'vehicle-positions/filter-vehicle-positions.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
 import { IConfig } from 'interfaces/config.interface';
-import { FeedMessages, IFeedStrategy } from 'feed/feed-messages.context';
+import { FeedMessages } from 'feed/feed-messages.context';
 import { VehiclePositionsStrategy } from 'feed/strategies/vehicle-positions.strategy';
 
 @Injectable()
@@ -57,9 +57,9 @@ export class VehiclePositionsService {
       urls,
     });
 
-    const entities = new FeedMessages(
-      new VehiclePositionsStrategy() as IFeedStrategy,
-    ).getEntities<VehiclePositionEntity>(feedMessages);
+    const entities = new FeedMessages<VehiclePositionEntity>(
+      new VehiclePositionsStrategy(),
+    ).getEntities(feedMessages);
 
     if (routeIds.length > 0) {
       return filterTripEntitiesByRouteIds<VehiclePositionEntity>(
@@ -68,6 +68,6 @@ export class VehiclePositionsService {
       );
     }
 
-    return <VehiclePositionEntity[]>entities;
+    return entities;
   }
 }

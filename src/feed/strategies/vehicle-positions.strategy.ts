@@ -1,9 +1,12 @@
-import { EntityTypes } from 'constants/';
 import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
+import { IFeedStrategy } from 'feed/feed-messages.context';
 import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 import { getFeedEntitiesByType } from 'util/';
+import { EntityTypes } from 'constants/';
 
-export class VehiclePositionsStrategy {
+export class VehiclePositionsStrategy
+  implements IFeedStrategy<VehiclePositionEntity>
+{
   public getEntities(feeds: FeedMessage[]): VehiclePositionEntity[] {
     const entities = feeds.map((feed: FeedMessage) =>
       getFeedEntitiesByType(feed, EntityTypes.VEHICLE_POSITION),

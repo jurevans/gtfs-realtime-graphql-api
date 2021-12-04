@@ -11,7 +11,7 @@ import { EntityTypes } from 'constants/';
 import { GetAlertsArgs } from 'alerts/alerts.args';
 import { FilterAlertsArgs } from 'alerts/filter-alerts.args';
 import { IConfig } from 'interfaces/config.interface';
-import { FeedMessages, IFeedStrategy } from 'feed/feed-messages.context';
+import { FeedMessages } from 'feed/feed-messages.context';
 import { AlertsStrategy } from 'feed/strategies/alerts.strategy';
 
 @Injectable()
@@ -48,14 +48,14 @@ export class AlertsService {
       urls,
     });
 
-    const entities = new FeedMessages(
-      new AlertsStrategy() as IFeedStrategy,
-    ).getEntities<AlertEntity>(feedMessages);
+    const entities = new FeedMessages<AlertEntity>(
+      new AlertsStrategy(),
+    ).getEntities(feedMessages);
 
     if (routeIds.length > 0) {
       return <AlertEntity[]>filterAlertsByRouteIds(entities, routeIds);
     }
 
-    return <AlertEntity[]>entities;
+    return entities;
   }
 }

@@ -58,13 +58,14 @@ export class TripUpdatesService {
       urls,
     });
 
-    const entities = new FeedMessages(
-      new TripUpdatesStrategy() as IFeedStrategy,
-    ).getEntities<TripUpdateEntity>(feedMessages);
+    const entities = new FeedMessages<TripUpdateEntity>(
+      new TripUpdatesStrategy(),
+    ).getEntities(feedMessages);
 
     if (routeIds.length > 0) {
       return filterTripEntitiesByRouteIds<TripUpdateEntity>(entities, routeIds);
     }
-    return <TripUpdateEntity[]>entities;
+
+    return entities;
   }
 }
