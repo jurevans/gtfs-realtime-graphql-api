@@ -1,8 +1,10 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
-import { FeedArgs } from 'args/feed.args';
 
 @ArgsType()
-export class GetAlertsArgs extends FeedArgs {
+export class GetAlertsArgs {
+  @Field(() => Int)
+  feedIndex: number;
+
   @Field(() => [String], { nullable: true })
   translation?: string[];
 
@@ -11,4 +13,10 @@ export class GetAlertsArgs extends FeedArgs {
 
   @Field(() => Int, { nullable: true })
   end?: number;
+}
+
+@ArgsType()
+export class FilterAlertsArgs {
+  @Field(() => [String], { defaultValue: [] })
+  routeIds: string[];
 }

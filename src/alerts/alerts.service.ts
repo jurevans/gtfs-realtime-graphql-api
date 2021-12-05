@@ -8,9 +8,7 @@ import {
   getGTFSConfigByFeedIndex,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { GetAlertsArgs } from 'alerts/alerts.args';
-import { FilterAlertsArgs } from 'alerts/filter-alerts.args';
-import { IConfig } from 'interfaces/config.interface';
+import { GetAlertsArgs, FilterAlertsArgs } from 'alerts/alerts.args';
 import { FeedMessages } from 'feed/feed-messages.context';
 import { AlertsStrategy } from 'feed/strategies/alerts.strategy';
 
@@ -28,10 +26,7 @@ export class AlertsService {
     const { feedIndex } = args;
     const { routeIds } = filter;
 
-    const config: IConfig = getGTFSConfigByFeedIndex(
-      this.configService,
-      feedIndex,
-    );
+    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
 
     if (!config) {
       throw new HttpException(

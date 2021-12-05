@@ -1,8 +1,7 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { AlertsService } from 'alerts/alerts.service';
 import { AlertEntity } from 'entities/alert.entity';
-import { GetAlertsArgs } from 'alerts/alerts.args';
-import { FilterAlertsArgs } from 'alerts/filter-alerts.args';
+import { GetAlertsArgs, FilterAlertsArgs } from 'alerts/alerts.args';
 
 @Resolver(() => AlertEntity)
 export class AlertsResolver {
