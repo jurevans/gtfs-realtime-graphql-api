@@ -2,15 +2,15 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FeedService } from 'feed/feed.service';
 import { AlertEntity } from 'entities/alert.entity';
+import { GetAlertsArgs, FilterAlertsArgs } from 'alerts/alerts.args';
+import { FeedMessages } from 'feed/feed-messages.context';
+import { AlertsStrategy } from 'feed/strategies/alerts.strategy';
 import {
   filterAlertsByRouteIds,
   getUrlsByType,
   getGTFSConfigByFeedIndex,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { GetAlertsArgs, FilterAlertsArgs } from 'alerts/alerts.args';
-import { FeedMessages } from 'feed/feed-messages.context';
-import { AlertsStrategy } from 'feed/strategies/alerts.strategy';
 
 @Injectable()
 export class AlertsService {
