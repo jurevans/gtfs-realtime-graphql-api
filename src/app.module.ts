@@ -36,7 +36,7 @@ import { VehiclePositionsModule } from './vehicle-positions/vehicle-positions.mo
     GraphQLModule.forRoot({
       debug: true,
       playground: true,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
     }),
     AlertsModule,
     TripUpdatesModule,
