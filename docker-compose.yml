@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  dev:
+    container_name: gtfs-realtime_dev
+    image: gtfs-realtime-graphql-api-dev:1.0.0
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start:debug
+    ports:
+      - 5000:5000
+      - 9229:9229
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    networks:
+      - gtfs-rt
+  prod:
+    container_name: gtfs-realtime_prod
+    image: gtfs-realtime-graphql-api-prod:1.0.0
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 5000:5000
+      - 9229:9229
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    networks:
+      - gtfs-rt
+  redis:
+    container_name: gtfs-redis
+    image: redis:6.2.6
+    ports:
+      - 6379:6379
+    command: [
+          "bash", "-c",
+          '
+           docker-entrypoint.sh
+           --requirepass ${REDIS_AUTH}
+          '
+    ]
+    networks:
+      - gtfs-rt
+
+networks:
+  gtfs-rt:

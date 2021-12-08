@@ -2,7 +2,6 @@ import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import axios from 'axios';
-import { IConfig } from 'interfaces/config.interface';
 import { FeedMessage } from 'proto/gtfs-realtime';
 import { getGTFSConfigByFeedIndex } from 'util/';
 
@@ -23,7 +22,7 @@ export class FeedService {
     return await Promise.all(
       urls.map(
         async (endpoint: string) =>
-          <FeedMessage>await this._getFeedMessage(feedIndex, endpoint),
+          await this._getFeedMessage(feedIndex, endpoint),
       ),
     );
   }
@@ -37,11 +36,8 @@ export class FeedService {
       return feedMessageInCache;
     }
 
-    const config: IConfig = getGTFSConfigByFeedIndex(
-      this.configService,
-      feedIndex,
-    );
-    const { accessKey }: { accessKey: string } = config;
+    const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
+    const { accessKey } = config;
     const accessKeyValue: string = this.configService.get(accessKey);
     const options: any = {
       method: 'GET',
