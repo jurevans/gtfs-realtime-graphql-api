@@ -16,6 +16,8 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     restart: unless-stopped
+    networks:
+      - gtfs-rt
   prod:
     container_name: gtfs-realtime_prod
     image: gtfs-realtime-graphql-api-prod:1.0.0
@@ -31,11 +33,13 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     restart: unless-stopped
+    networks:
+      - gtfs-rt
   redis:
     container_name: gtfs-redis
     image: redis:6.2.6
     ports:
-      - "6379:6379"
+      - 6379:6379
     command: [
           "bash", "-c",
           '
@@ -43,3 +47,8 @@ services:
            --requirepass ${REDIS_AUTH}
           '
     ]
+    networks:
+      - gtfs-rt
+
+networks:
+  gtfs-rt:
