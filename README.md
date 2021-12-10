@@ -14,6 +14,7 @@ If you would like some inspiration for building a client that consumes real-time
   - [Authentication](#authentication)
   - [Connecting to Redis](#connecting-to-redis)
   - [GTFS Real-time API Access](#gtfs-realtime-configuration)
+- [Docker](#running-in-docker)
 - [Compiling .proto files](#compiling)
 - [Querying the API](#querying-the-api)
   - [Trip Updates](#trip-updates)
@@ -160,6 +161,38 @@ If you would like to use MTA real-time data, you can request access keys at the 
 - [MTA Bus Time](http://bustime.mta.info/wiki/Developers/Index)
 - [MTA Subway/LIRR/MNR](https://api.mta.info/#/landing)
   - _**Note**: For subway real-time data feeds, I believe that you need to create a developer account here to gain an access key._
+
+[ [Table of Contents](#table-of-contents) ]
+
+## Running in Docker
+
+Using `docker-compose`, it is straight-forward to run this API in a container:
+
+```bash
+# Run in development, debug mode:
+docker-compose up redis dev
+
+# Run in production mode:
+docker-compose up redis prod
+```
+
+**NOTE**: Make sure to update your `.env` file accordingly. The `redis` container is configured to be accessed as `gtfs-redis`:
+
+```bash
+# .env
+REDIS_HOST=gtfs-redis
+REDIS_AUTH=XXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+The `auth` key specified by `REDIS_AUTH` is what will be used when `redis-server` is initialized. You can access the `redis-cli` inside the container with the following commands:
+
+```bash
+$ docker exec -it gtfs-redis sh
+$ redis-cli
+gtfs-redis:6379> auth XXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+Where `XXXXXXXXXXXXXXXXXXXXXXXXXX` is a valid auth key specified in `.env`.
 
 [ [Table of Contents](#table-of-contents) ]
 
