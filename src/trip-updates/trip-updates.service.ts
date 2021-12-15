@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TripUpdateEntity } from 'entities/trip-update.entity';
+import { StopTimeUpdateEntity } from 'entities/stop-time-update.entity';
 import { FeedService } from 'feed/feed.service';
 import {
   GetTripUpdatesArgs,
@@ -16,7 +17,6 @@ import {
   getUrlsByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { StopTimeUpdateEntity } from 'entities/stop-time-update.entity';
 
 @Injectable()
 export class TripUpdatesService {

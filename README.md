@@ -250,6 +250,58 @@ Fetch `TripUpdate` data for routes `A`, `1` and `G`, for Feed with `feedIndex` =
 
 [ [Table of Contents](#table-of-contents) ]
 
+Alternatively, you can query by an array of Stop IDs (**NOTE:** You can specify both `routeIds` and `stopIds` to optimize the performance of the query, but you will need to know beforehand which routes contain these stops):
+
+```graphql
+{
+  tripUpdates(
+    feedIndex: 1
+    routeIds: []
+    stopIds: [
+      "127N"
+      "127S"
+      "725N"
+      "725S"
+      "902N"
+      "902S"
+      "A27N"
+      "A27S"
+      "R16N"
+      "R16S"
+    ]
+  ) {
+    delay
+    trip {
+      tripId
+      routeId
+      startTime
+      startDate
+      directionId
+    }
+    stopTimeUpdate {
+      stopId
+      stopSequence
+      arrival {
+        time
+        delay
+        uncertainty
+      }
+      departure {
+        time
+        delay
+        uncertainty
+      }
+      scheduleRelationship
+    }
+    vehicle {
+      licensePlate
+    }
+  }
+}
+```
+
+[ [Table of Contents](#table-of-contents) ]
+
 ### Alerts
 
 Fetch `Alert` data for `feedIndex` = `1`:
