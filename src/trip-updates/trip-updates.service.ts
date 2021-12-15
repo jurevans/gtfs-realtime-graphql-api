@@ -16,6 +16,7 @@ import {
   getUrlsByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
+import { StopTimeUpdateEntity } from 'entities/stop-time-update.entity';
 
 @Injectable()
 export class TripUpdatesService {
@@ -29,7 +30,7 @@ export class TripUpdatesService {
     filter: FilterTripUpdatesArgs,
   ) {
     const { feedIndex } = args;
-    const { routeIds } = filter;
+    const { routeIds, stopIds } = filter;
 
     const config = getGTFSConfigByFeedIndex(this.configService, feedIndex);
 
@@ -56,12 +57,30 @@ export class TripUpdatesService {
       urls,
     });
 
-    const entities = new FeedMessages<TripUpdateEntity>(
+    let entities = new FeedMessages<TripUpdateEntity>(
       new TripUpdatesStrategy(),
     ).getEntities(feedMessages);
 
+    if (stopIds.length > 0) {
+      entities = entities
+        .map((tripUpdate: TripUpdateEntity) => ({
+          ...tripUpdate,
+          stopTimeUpdate: tripUpdate.stopTimeUpdate.filter(
+            (stUpdate: StopTimeUpdateEntity) =>
+              stopIds.indexOf(stUpdate.stopId) > -1,
+          ),
+        }))
+        .filter(
+          (tripUpdate: TripUpdateEntity) =>
+            tripUpdate.stopTimeUpdate.length > 0,
+        );
+    }
+
     if (routeIds.length > 0) {
-      return filterTripEntitiesByRouteIds<TripUpdateEntity>(entities, routeIds);
+      entities = filterTripEntitiesByRouteIds<TripUpdateEntity>(
+        entities,
+        routeIds,
+      );
     }
 
     return entities;
