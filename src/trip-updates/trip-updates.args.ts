@@ -18,4 +18,7 @@ export class GetTripUpdatesArgs {
 export class FilterTripUpdatesArgs {
   @Field(() => [String], { defaultValue: [] })
   routeIds: string[];
+
+  @Field(() => [String], { defaultValue: [] })
+  stopIds: string[];
 }

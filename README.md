@@ -14,6 +14,7 @@ If you would like some inspiration for building a client that consumes real-time
   - [Authentication](#authentication)
   - [Connecting to Redis](#connecting-to-redis)
   - [GTFS Real-time API Access](#gtfs-realtime-configuration)
+- [Docker](#running-in-docker)
 - [Compiling .proto files](#compiling)
 - [Querying the API](#querying-the-api)
   - [Trip Updates](#trip-updates)
@@ -163,6 +164,38 @@ If you would like to use MTA real-time data, you can request access keys at the 
 
 [ [Table of Contents](#table-of-contents) ]
 
+## Running in Docker
+
+Using `docker-compose`, it is straight-forward to run this API in a container:
+
+```bash
+# Run in development, debug mode:
+docker-compose up redis dev
+
+# Run in production mode:
+docker-compose up redis prod
+```
+
+**NOTE**: Make sure to update your `.env` file accordingly. The `redis` container is configured to be accessed as `gtfs-redis`:
+
+```bash
+# .env
+REDIS_HOST=gtfs-redis
+REDIS_AUTH=XXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+The `auth` key specified by `REDIS_AUTH` is what will be used when `redis-server` is initialized. You can access the `redis-cli` inside the container with the following commands:
+
+```bash
+$ docker exec -it gtfs-redis sh
+$ redis-cli
+gtfs-redis:6379> auth XXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+Where `XXXXXXXXXXXXXXXXXXXXXXXXXX` is a valid auth key specified in `.env`.
+
+[ [Table of Contents](#table-of-contents) ]
+
 ## Compiling
 
 ### Notes on .proto compiling
@@ -210,6 +243,58 @@ Fetch `TripUpdate` data for routes `A`, `1` and `G`, for Feed with `feedIndex` =
         delay
         uncertainty
       }
+    }
+  }
+}
+```
+
+[ [Table of Contents](#table-of-contents) ]
+
+Alternatively, you can query by an array of Stop IDs (**NOTE:** You can specify both `routeIds` and `stopIds` to optimize the performance of the query, but you will need to know beforehand which routes contain these stops):
+
+```graphql
+{
+  tripUpdates(
+    feedIndex: 1
+    routeIds: []
+    stopIds: [
+      "127N"
+      "127S"
+      "725N"
+      "725S"
+      "902N"
+      "902S"
+      "A27N"
+      "A27S"
+      "R16N"
+      "R16S"
+    ]
+  ) {
+    delay
+    trip {
+      tripId
+      routeId
+      startTime
+      startDate
+      directionId
+    }
+    stopTimeUpdate {
+      stopId
+      stopSequence
+      arrival {
+        time
+        delay
+        uncertainty
+      }
+      departure {
+        time
+        delay
+        uncertainty
+      }
+      scheduleRelationship
+    }
+    vehicle {
+      licensePlate
     }
   }
 }
