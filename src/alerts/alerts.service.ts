@@ -4,7 +4,7 @@ import { FeedService } from 'feed/feed.service';
 import { AlertEntity } from 'entities/alert.entity';
 import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 import { GetAlertsArgs, FilterAlertsArgs } from 'alerts/alerts.args';
-import { FeedMessages } from 'feed/feed-messages.context';
+import { FeedMessagesContext } from 'feed/feed-messages.context';
 import {
   filterAlertsByRouteIds,
   getUrlsByType,
@@ -44,11 +44,12 @@ export class AlertsService {
       urls,
     });
 
-    const entities = new FeedMessages<AlertEntity>((feeds: FeedMessage[]) =>
-      getFeedEntitiesByType(feeds, EntityTypes.ALERT).map(
-        (feedEntity: FeedEntity) =>
-          new AlertEntity(feedEntity[EntityTypes.ALERT]),
-      ),
+    const entities = new FeedMessagesContext<AlertEntity>(
+      (feeds: FeedMessage[]) =>
+        getFeedEntitiesByType(feeds, EntityTypes.ALERT).map(
+          (feedEntity: FeedEntity) =>
+            new AlertEntity(feedEntity[EntityTypes.ALERT]),
+        ),
     ).getEntities(feedMessages);
 
     if (routeIds.length > 0) {

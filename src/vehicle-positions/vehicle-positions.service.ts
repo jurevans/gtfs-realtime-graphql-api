@@ -8,7 +8,7 @@ import {
   FilterVehiclePositionsArgs,
 } from 'vehicle-positions/vehicle-positions.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
-import { FeedMessages } from 'feed/feed-messages.context';
+import { FeedMessagesContext } from 'feed/feed-messages.context';
 import {
   filterTripEntitiesByRouteIds,
   getGTFSConfigByFeedIndex,
@@ -56,7 +56,7 @@ export class VehiclePositionsService {
       urls,
     });
 
-    const entities = new FeedMessages<VehiclePositionEntity>(
+    const entities = new FeedMessagesContext<VehiclePositionEntity>(
       (feeds: FeedMessage[]) =>
         getFeedEntitiesByType(feeds, EntityTypes.VEHICLE_POSITION).map(
           (feedEntity: FeedEntity) =>

@@ -2,7 +2,7 @@ import { FeedMessage } from 'proto/gtfs-realtime';
 
 export type IFeedStrategy<T> = (feedMessage: FeedMessage[]) => T[];
 
-export class FeedMessages<T> {
+export class FeedMessagesContext<T> {
   private strategy: IFeedStrategy<T>;
 
   constructor(strategy: IFeedStrategy<T>) {

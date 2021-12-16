@@ -9,7 +9,7 @@ import {
   FilterTripUpdatesArgs,
 } from 'trip-updates/trip-updates.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
-import { FeedMessages } from 'feed/feed-messages.context';
+import { FeedMessagesContext } from 'feed/feed-messages.context';
 import {
   filterTripEntitiesByRouteIds,
   getEndpointsByRouteIds,
@@ -58,11 +58,12 @@ export class TripUpdatesService {
       urls,
     });
 
-    let entities = new FeedMessages<TripUpdateEntity>((feeds: FeedMessage[]) =>
-      getFeedEntitiesByType(feeds, EntityTypes.TRIP_UPDATE).map(
-        (feedEntity: FeedEntity) =>
-          new TripUpdateEntity(feedEntity[EntityTypes.TRIP_UPDATE]),
-      ),
+    let entities = new FeedMessagesContext<TripUpdateEntity>(
+      (feeds: FeedMessage[]) =>
+        getFeedEntitiesByType(feeds, EntityTypes.TRIP_UPDATE).map(
+          (feedEntity: FeedEntity) =>
+            new TripUpdateEntity(feedEntity[EntityTypes.TRIP_UPDATE]),
+        ),
     ).getEntities(feedMessages);
 
     if (stopIds.length > 0) {
