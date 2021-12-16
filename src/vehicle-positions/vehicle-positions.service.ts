@@ -8,14 +8,15 @@ import {
 } from 'vehicle-positions/vehicle-positions.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
 import { FeedMessages } from 'feed/feed-messages.context';
-import { VehiclePositionsStrategy } from 'feed/strategies/vehicle-positions.strategy';
 import {
   filterTripEntitiesByRouteIds,
   getGTFSConfigByFeedIndex,
   getEndpointsByRouteIds,
   getUrlsByType,
+  getFeedEntitiesByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
+import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 
 @Injectable()
 export class VehiclePositionsService {
@@ -56,7 +57,11 @@ export class VehiclePositionsService {
     });
 
     const entities = new FeedMessages<VehiclePositionEntity>(
-      new VehiclePositionsStrategy(),
+      (feeds: FeedMessage[]) =>
+        getFeedEntitiesByType(feeds, EntityTypes.VEHICLE_POSITION).map(
+          (feedEntity: FeedEntity) =>
+            new VehiclePositionEntity(feedEntity[EntityTypes.VEHICLE_POSITION]),
+        ),
     ).getEntities(feedMessages);
 
     if (routeIds.length > 0) {

@@ -4,13 +4,14 @@ import { FeedService } from 'feed/feed.service';
 import { AlertEntity } from 'entities/alert.entity';
 import { GetAlertsArgs, FilterAlertsArgs } from 'alerts/alerts.args';
 import { FeedMessages } from 'feed/feed-messages.context';
-import { AlertsStrategy } from 'feed/strategies/alerts.strategy';
 import {
   filterAlertsByRouteIds,
   getUrlsByType,
   getGTFSConfigByFeedIndex,
+  getFeedEntitiesByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
+import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 
 @Injectable()
 export class AlertsService {
@@ -43,8 +44,11 @@ export class AlertsService {
       urls,
     });
 
-    const entities = new FeedMessages<AlertEntity>(
-      new AlertsStrategy(),
+    const entities = new FeedMessages<AlertEntity>((feeds: FeedMessage[]) =>
+      getFeedEntitiesByType(feeds, EntityTypes.ALERT).map(
+        (feedEntity: FeedEntity) =>
+          new AlertEntity(feedEntity[EntityTypes.ALERT]),
+      ),
     ).getEntities(feedMessages);
 
     if (routeIds.length > 0) {

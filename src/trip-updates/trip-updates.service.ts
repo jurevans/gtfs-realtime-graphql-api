@@ -9,14 +9,15 @@ import {
 } from 'trip-updates/trip-updates.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
 import { FeedMessages } from 'feed/feed-messages.context';
-import { TripUpdatesStrategy } from 'feed/strategies/trip-updates.strategy';
 import {
   filterTripEntitiesByRouteIds,
   getEndpointsByRouteIds,
+  getFeedEntitiesByType,
   getGTFSConfigByFeedIndex,
   getUrlsByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
+import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 
 @Injectable()
 export class TripUpdatesService {
@@ -57,8 +58,11 @@ export class TripUpdatesService {
       urls,
     });
 
-    let entities = new FeedMessages<TripUpdateEntity>(
-      new TripUpdatesStrategy(),
+    let entities = new FeedMessages<TripUpdateEntity>((feeds: FeedMessage[]) =>
+      getFeedEntitiesByType(feeds, EntityTypes.TRIP_UPDATE).map(
+        (feedEntity: FeedEntity) =>
+          new TripUpdateEntity(feedEntity[EntityTypes.TRIP_UPDATE]),
+      ),
     ).getEntities(feedMessages);
 
     if (stopIds.length > 0) {

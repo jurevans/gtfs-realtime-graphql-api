@@ -53,12 +53,13 @@ export const getAlertTranslationText = (
  * @returns {FeedEntity[]}
  */
 export const getFeedEntitiesByType = (
-  feedMessage: FeedMessage,
+  feedMessages: FeedMessage[],
   type: string,
 ): FeedEntity[] => {
-  return feedMessage.entity.filter((entity: FeedEntity) =>
-    entity.hasOwnProperty(type),
-  );
+  return feedMessages
+    .map((feedMessage: FeedMessage) => feedMessage.entity)
+    .flat()
+    .filter((entity: FeedEntity) => entity.hasOwnProperty(type));
 };
 
 /**

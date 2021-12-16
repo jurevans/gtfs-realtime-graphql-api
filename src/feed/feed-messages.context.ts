@@ -1,8 +1,6 @@
 import { FeedMessage } from 'proto/gtfs-realtime';
 
-export interface IFeedStrategy<T> {
-  getEntities: (feedMessage: FeedMessage[]) => T[];
-}
+export type IFeedStrategy<T> = (feedMessage: FeedMessage[]) => T[];
 
 export class FeedMessages<T> {
   private strategy: IFeedStrategy<T>;
@@ -15,7 +13,7 @@ export class FeedMessages<T> {
     this.strategy = strategy;
   }
 
-  public getEntities(feedMessage: FeedMessage[]): T[] {
-    return this.strategy.getEntities(feedMessage);
+  public getEntities(feedMessages: FeedMessage[]): T[] {
+    return this.strategy(feedMessages);
   }
 }
