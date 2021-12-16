@@ -2,14 +2,13 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TripUpdateEntity } from 'entities/trip-update.entity';
 import { StopTimeUpdateEntity } from 'entities/stop-time-update.entity';
-import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
+import { FeedEntity } from 'proto/gtfs-realtime';
 import { FeedService } from 'feed/feed.service';
 import {
   GetTripUpdatesArgs,
   FilterTripUpdatesArgs,
 } from 'trip-updates/trip-updates.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
-import { FeedMessagesContext } from 'feed/feed-messages.context';
 import {
   filterTripEntitiesByRouteIds,
   getEndpointsByRouteIds,
@@ -58,13 +57,13 @@ export class TripUpdatesService {
       urls,
     });
 
-    let entities = new FeedMessagesContext<TripUpdateEntity>(
-      (feeds: FeedMessage[]) =>
-        getFeedEntitiesByType(feeds, EntityTypes.TRIP_UPDATE).map(
-          (feedEntity: FeedEntity) =>
-            new TripUpdateEntity(feedEntity[EntityTypes.TRIP_UPDATE]),
-        ),
-    ).getEntities(feedMessages);
+    let entities = getFeedEntitiesByType(
+      feedMessages,
+      EntityTypes.TRIP_UPDATE,
+    ).map(
+      (feedEntity: FeedEntity) =>
+        new TripUpdateEntity(feedEntity[EntityTypes.TRIP_UPDATE]),
+    );
 
     if (stopIds.length > 0) {
       entities = entities

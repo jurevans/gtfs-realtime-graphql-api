@@ -1,14 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
-import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
+import { FeedEntity } from 'proto/gtfs-realtime';
 import { FeedService } from 'feed/feed.service';
 import {
   GetVehiclePositionsArgs,
   FilterVehiclePositionsArgs,
 } from 'vehicle-positions/vehicle-positions.args';
 import { IEndpoint } from 'interfaces/endpoint.interface';
-import { FeedMessagesContext } from 'feed/feed-messages.context';
 import {
   filterTripEntitiesByRouteIds,
   getGTFSConfigByFeedIndex,
@@ -56,13 +55,13 @@ export class VehiclePositionsService {
       urls,
     });
 
-    const entities = new FeedMessagesContext<VehiclePositionEntity>(
-      (feeds: FeedMessage[]) =>
-        getFeedEntitiesByType(feeds, EntityTypes.VEHICLE_POSITION).map(
-          (feedEntity: FeedEntity) =>
-            new VehiclePositionEntity(feedEntity[EntityTypes.VEHICLE_POSITION]),
-        ),
-    ).getEntities(feedMessages);
+    const entities = getFeedEntitiesByType(
+      feedMessages,
+      EntityTypes.VEHICLE_POSITION,
+    ).map(
+      (feedEntity: FeedEntity) =>
+        new VehiclePositionEntity(feedEntity[EntityTypes.VEHICLE_POSITION]),
+    );
 
     if (routeIds.length > 0) {
       return filterTripEntitiesByRouteIds<VehiclePositionEntity>(
