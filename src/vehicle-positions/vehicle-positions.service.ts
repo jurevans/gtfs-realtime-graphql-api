@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { VehiclePositionEntity } from 'entities/vehicle-position.entity';
+import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 import { FeedService } from 'feed/feed.service';
 import {
   GetVehiclePositionsArgs,
@@ -16,7 +17,6 @@ import {
   getFeedEntitiesByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 
 @Injectable()
 export class VehiclePositionsService {

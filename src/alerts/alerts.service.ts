@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FeedService } from 'feed/feed.service';
 import { AlertEntity } from 'entities/alert.entity';
+import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 import { GetAlertsArgs, FilterAlertsArgs } from 'alerts/alerts.args';
 import { FeedMessages } from 'feed/feed-messages.context';
 import {
@@ -11,7 +12,6 @@ import {
   getFeedEntitiesByType,
 } from 'util/';
 import { EntityTypes } from 'constants/';
-import { FeedEntity, FeedMessage } from 'proto/gtfs-realtime';
 
 @Injectable()
 export class AlertsService {
